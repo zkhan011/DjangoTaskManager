@@ -1,0 +1,279 @@
+{% extends "portal/base.html" %}
+{# create new Task #}
+
+{% block title %} Task {{ task.number }} - Streit Portal{% endblock %}
+
+
+{% block container %}
+
+    <h3>Task {{ task.number }} Details </h3>
+
+    {% if request.user == task.owner %}
+        {# Owner!!!  #}
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+
+                <form class="form-horizontal" role="form" action="" method="post">
+                    {% csrf_token %}
+
+
+                    {# Start Date: #}
+                    <div class="form-group  {% if form.start_date.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2" for="id_start_date">Start Date*:</label>
+
+                        <div class="col-sm-3">
+                            {{ form.start_date }}
+                            {{ form.start_date.errors }}
+                        </div>
+                    </div>
+
+                    {# Required Date: #}
+                    <div class="form-group  {% if form.target_completion_date.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2" for="id_target_completion_date">Required Date*:</label>
+
+                        <div class="col-sm-3">
+                            {{ form.target_completion_date }}
+                            {{ form.target_completion_date.errors }}
+                        </div>
+                    </div>
+
+                    {# Prioroty: #}
+                    <div class="form-group  {% if form.priority.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2" for="id_priority">Priority*:</label>
+
+                        <div class="col-sm-3">
+                            {{ form.priority }}
+                            {{ form.priority.errors }}
+                        </div>
+                    </div>
+
+                    {# Details : #}
+                    <div class="form-group   {% if form.details.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="status">Task Details:</label>
+
+                        <div class="col-sm-4">
+                            {{ form.details }}
+                            {{ form.details.errors }}
+                        </div>
+                    </div>
+
+                    {# Project : #}
+                    <div class="form-group   {% if form.project.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="id_project">Project:</label>
+
+                        <div class="col-sm-4">
+                            {{ form.project }}
+                            {{ form.project.errors }}
+                        </div>
+                    </div>
+
+
+                    {# PO : #}
+                    <div class="form-group   {% if form.po.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="id_po">PO (if any):</label>
+
+                        <div class="col-sm-4">
+                            {{ form.po }}
+                            {{ form.po.errors }}
+                        </div>
+                    </div>
+
+                    {# Assignee #}
+                    <div class="form-group   {% if form.assignee.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="id_assignee">Assignee*:</label>
+
+                        <div class="col-sm-3">
+                            {{ form.assignee }}
+                            {{ form.assignee.errors }}
+                        </div>
+                    </div>
+
+                    {# Department #}
+                    <div class="form-group   {% if form.department.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="id_department">Department:</label>
+
+                        <div class="col-sm-3">
+                            {{ form.department }}
+                            {{ form.department.errors }}
+                        </div>
+                    </div>
+
+                    {# Status : #}
+                    <div class="form-group   {% if form.status.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="id_status">Status:</label>
+
+                        <div class="col-sm-4">
+                            {{ form.status }}
+                            {{ form.status.errors }}
+                        </div>
+                    </div>
+
+                    {# Comments : #}
+                    <div class="form-group   {% if form.comments.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="status">Task Comments:</label>
+
+                        <div class="col-sm-4">
+                            {{ form.comments }}
+                            {{ form.comments.errors }}
+                        </div>
+                    </div>
+
+                    {# Completion Date : #}
+                    <div class="form-group   {% if form.completion_date.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="id_completion_date">Completion
+                            Date:</label>
+
+                        <div class="col-sm-4">
+                            {{ form.completion_date }}
+                            {{ form.completion_date.errors }}
+                        </div>
+                    </div>
+
+                    {# Completed : #}
+                    <div class="form-group   {% if form.completed.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="id_completed">Completed:</label>
+
+                        <div class="col-sm-4">
+                            {{ form.completed }}
+                            {{ form.completed.errors }}
+                        </div>
+                    </div>
+
+                    {# Submit #}
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-4">
+                            <button type="submit" class="btn btn-primary">Update task</button>
+                            <a href="/tasks/list" class="btn btn-default" role="button">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    {% elif request.user == task.assignee %}
+        {# Assingnee Form #}
+        <div class="panel panel-default">
+            <div class="panel-body">
+
+                <div class="row">
+                    <div class="col-sm-2 text-right">Task Details:</div>
+                    <div class="col-sm-4"> {{ task.details }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 text-right">Assignee:</div>
+                    <div class="col-sm-4"> {{ task.assignee.first_name }} {{ task.assignee.last_name }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 text-right">Department:</div>
+                    <div class="col-sm-4"> {{ task.department }}</div>
+                </div>
+                <div>&nbsp;</div>
+
+                <form class="form-horizontal" role="form" action="" method="post">
+                    {% csrf_token %}
+                    {# Status : #}
+                    <div class="form-group   {% if form.status.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="id_status">Status:</label>
+
+                        <div class="col-sm-4">
+                            {{ form.status }}
+                            {{ form.status.errors }}
+                        </div>
+                    </div>
+
+                    {# Comments : #}
+                    <div class="form-group   {% if form.comments.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="status">Task Comments:</label>
+
+                        <div class="col-sm-4">
+                            {{ form.comments }}
+                            {{ form.comments.errors }}
+                        </div>
+                    </div>
+
+                    {# Submit #}
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-4">
+                            <button type="submit" class="btn btn-primary">Update task</button>
+                            <a href="/tasks/list" class="btn btn-default" role="button">Cancel</a>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div> {# end of panel #}
+
+        {# all others #}
+
+    {% else %}
+
+        <div class="row">
+            <div class="col-sm-1">Dated:</div>
+            <div class="col-sm-2">{{ task.start_date }}</div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-1">Owner:</div>
+            <div class="col-sm-2">{{ task.owner.first_name }} {{ task.owner.last_name }}</div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-1">Assignee:</div>
+            <div class="col-sm-2">{{ task.assignee.first_name }} {{ task.assignee.last_name }}</div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-1">Deadline:</div>
+            <div class="col-sm-2">{{ task.target_completion_date }} </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-1">Priority:</div>
+            <div class="col-sm-2">{{ task.get_priority_display }} </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-1">Project:</div>
+            <div class="col-sm-2">{{ task.project }}</div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-1">Task:</div>
+            <div class="col-sm-3 mark">{{ task.details }}</div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-1">Comments:</div>
+            <div class="col-sm-3">{{ task.comments }}</div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-1">Status:</div>
+            <div class="col-sm-2">{{ task.get_status_display }}</div>
+        </div>
+
+    {% endif %}
+
+    <script>
+        $(function () {
+            $("#id_start_date").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            $("#id_target_completion_date").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            $("#id_completion_date").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            {#   //$("#id_end_date").datepicker('setDate', new Date()); #}
+            {#// if ($("#id_date").val() === ""){   #}
+            {#//     $("#id_date").datepicker('setDate', new Date()); #}
+            {#//}#}
+        });
+    </script>
+
+{% endblock %}

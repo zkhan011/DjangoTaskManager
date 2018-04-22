@@ -1,0 +1,140 @@
+{# finance requests list #}
+{% extends "portal/base.html" %}
+{% load staticfiles %}
+{% load humanize %}
+
+
+  {% block additional_head_links %}
+
+      {#  JS and CSS can be linked #}
+
+
+       <script src="{% static "chartjs/Chart.bundle.js" %}"></script>
+
+    <script src="{% static "chartjs/utils.js" %}"></script>
+
+    <style>
+    canvas {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+    </style>
+
+ {% endblock %}
+
+
+{% block container %}
+    <!-- Main component for a primary marketing message or call to action -->
+
+    <h3>
+       Finance Forecast
+    </h3>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+
+        </div>
+
+        <div class="panel-body">
+
+
+
+
+
+
+        <div style="width: 100%">
+        <canvas id="forecast_chart"></canvas>
+    </div>
+
+
+              </div>
+    </div>
+   {#   <button id="randomizeData">Randomize Data</button>#}
+    <script>
+        var chartData = {
+            labels: ["October", "November", "December", "January", "February", "March", "April"],
+
+            datasets: [
+              /*  {
+                type: 'line',
+                label: 'Dataset 1',
+                borderColor: window.chartColors.blue,
+                borderWidth: 2,
+                fill: false,
+                data: [
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor()
+                ]
+            }, */{
+                type: 'bar',
+                label: 'Expences',
+                backgroundColor: window.chartColors.red,
+                data: [
+                    550,
+                    480,
+                    1224,
+                    330,
+                    670,
+                    1870,
+                    980
+                ],
+                borderColor: 'white',
+                borderWidth: 2
+            }, {
+                type: 'bar',
+                label: 'Income',
+                backgroundColor: window.chartColors.green,
+                data: [
+                    680,
+                   320,
+                    0,
+                    3350,
+                    280,
+                    600,
+                    410
+                ]
+            }]
+
+        };
+        window.onload = function() {
+            var ctx = document.getElementById("forecast_chart").getContext("2d");
+            window.myMixedChart = new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Finance Forecast Oct. 2017 - Apr. 2018, x1000 AED'
+                    },
+                    tooltips: {
+                        mode: 'index',
+                        intersect: true
+                    }
+                }
+            });
+        };
+
+        document.getElementById('randomizeData').addEventListener('click', function() {
+            chartData.datasets.forEach(function(dataset) {
+                dataset.data = dataset.data.map(function() {
+                    return randomScalingFactor();
+                });
+            });
+            window.myMixedChart.update();
+        });
+    </script>
+
+
+
+
+
+
+
+{% endblock %}

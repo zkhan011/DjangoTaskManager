@@ -1,0 +1,600 @@
+{# finance requests list #}
+{% extends "portal/base.html" %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block title %}
+    Payments Management - {{ PROJECT_NAME }}  v{{ PROJECT_VERSION }}
+{% endblock %}
+
+{% block additional_head_links %}
+    <link rel="stylesheet" type="text/css" href="{% static "datatables/datatables.min.css" %}"/>
+    <script type="text/javascript" src="{% static "datatables/datatables.min.js" %}"></script>
+
+    <script src="{% static "chartjs/Chart.bundle.js" %}"></script>
+    <script src="{% static "chartjs/utils.js" %}"></script>
+
+    <style>
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
+
+{% endblock %}
+
+
+{% block container %}
+    <!-- Main component for a primary marketing message or call to action -->
+
+    <h3>
+        Payments Management
+    </h3>
+    <hr>
+
+
+    {% comment %}
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+
+        </div>
+
+        <div class="panel-body">
+
+            {{ date_from }} <br>
+            {{ date_to }}
+
+
+            <div style="width: 100%">
+                <canvas id="forecast_chart"></canvas>
+            </div>
+
+
+        </div>
+    </div>
+{% endcomment %}
+
+
+
+    <h4>
+        Receivables forecast:
+    </h4>
+
+
+    {# Receivables forecast table #}
+    <table class=" table table-condensed table-hover display compact table-striped" id="tbl-receivables">
+        <thead>
+        <tr class="result-header small">
+            <th>Number</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>Partner</th>
+            <th>Comments</th>
+            <th>Date</th>
+            <th>Overdue</th>
+            <th align="right">Current week <br> {{ week1 }}</th>
+            <th align="right">Week 2 <br> {{ week2 }}</th>
+            <th>Week 3 <br> {{ week3 }}</th>
+            <th>Week 4 <br> {{ week4 }}</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        {% for i in data_receivables %}
+            <tr class="small" id="receivable_{{ i.receivable.id }}">
+                <td>
+                    <a href="/finance/receivables/{{ i.receivable.id }}/details">{{ i.receivable.number }}</a>
+                </td>
+                <td>
+
+                </td>
+                <td>
+
+                </td>
+                <td>
+
+                </td>
+
+                <td>
+                    {{ i.receivable.partner }}
+                </td>
+                <td>
+                    {{ i.receivable.comments|truncatewords:5 }}
+                </td>
+                <td>
+                    {{ i.receivable.date|date:"Y-m-d" }}
+                </td>
+
+                {% if i.week == 0 %}
+                    <td align="right" class="amount">
+                        <a href="/finance/receivables/{{ i.receivable.id }}/details"> <span
+                                id="re_amount_{{ i.receivable.id }}"> {{ i.receivable.amount|floatformat:2|intcomma }} </span>
+                        </a>
+
+
+                    </td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+
+                {% if i.week == 1 %}
+                    <td align="right" class="amount">
+                        <a href="/finance/receivables/{{ i.receivable.id }}/details"> <span
+                                id="re_amount_{{ i.receivable.id }}"> {{ i.receivable.amount|floatformat:2|intcomma }} </span>
+                        </a>
+                    </td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+
+                {% if i.week == 2 %}
+                    <td align="right" class="amount">
+                        <a href="/finance/receivables/{{ i.receivable.id }}/details"> <span
+                                id="re_amount_{{ i.receivable.id }}"> {{ i.receivable.amount|floatformat:2|intcomma }} </span>
+                        </a>
+                    </td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+
+                {% if i.week == 3 %}
+                    <td align="right" class="amount">
+                        <a href="/finance/receivables/{{ i.receivable.id }}/details"> <span
+                                id="re_amount_{{ i.receivable.id }}"> {{ i.receivable.amount|floatformat:2|intcomma }} </span>
+                        </a>
+                    </td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+
+                {% if i.week == 4 %}
+                    <td align="right" class="amount">
+                        <a href="/finance/receivables/{{ i.receivable.id }}/details"> <span
+                                id="re_amount_{{ i.receivable.id }}"> {{ i.receivable.amount|floatformat:2|intcomma }} </span>
+                        </a>
+                    </td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+
+        </tbody>
+
+        <tfoot>
+        <tr class="small">
+            <th></th>
+            <th class="text-right"></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th class="text-right"></th>
+            <th class="text-right"></th>
+            <th class="text-right"></th>
+            <th class="text-right"></th>
+            <th class="text-right"></th>
+        </tr>
+        </tfoot>
+
+    </table>
+
+
+
+    {# =================== BANK BALANCE ========================= #}
+    <div>&nbsp;</div>
+    <div class="well ">
+        <div class="row">
+            <div class="col-sm-2">Bank balance (AED):</div>
+            <div class="col-sm-4" align="left"><input type="text" class="form-control" id="bank-balance" value="0">
+            </div>
+
+        </div>
+    </div>
+    <div>&nbsp;</div>
+
+
+    {# =================== Payment requests ========================= #}
+    <h4>
+        Payment requests:
+    </h4>
+    <table class=" table table-condensed table-hover display compact table-striped" id="request-table">
+        <thead>
+        <tr class="result-header small">
+            <th>Request</th>
+            <th>Payment<br>Priority</th>
+            <th></th>
+            <th>PO<br>&nbsp;</th>
+            <th>Vendor</th>
+            <th>Priority</th>
+            <th>Required Date</th>
+            <th>Amount</th>
+            <th align="right">Week 1 {{ week1 }}</th>
+            <th align="right">Week 2 <br> {{ week2 }}</th>
+            <th>Week 3 <br> {{ week3 }}</th>
+            <th>Week 4 <br> {{ week4 }}</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        {% for i in data_requests %}
+            <tr class="small" id="request_{{ i.request.id }}">
+                <td>
+                    <a href="/finance/request/{{ i.request.id }}/details">{{ i.request.number }}</a>
+                </td>
+                <td>
+                    <span id="pay_priority_{{ i.request.id }}">{{ i.request.payment_priority }}</span>
+                </td>
+                <td>
+                    <select onchange="changePriority(this)" id="change_priority_{{ i.request.id }}">
+                        <option value="0" {% if i.request.payment_priority == 0 %}selected{% endif %}>--</option>
+                        <option value="1" {% if i.request.payment_priority == 1 %}selected{% endif %}>1</option>
+                        <option value="2" {% if i.request.payment_priority == 2 %}selected{% endif %}>2</option>
+                        <option value="3" {% if i.request.payment_priority == 3 %}selected{% endif %}>3</option>
+                        <option value="4" {% if i.request.payment_priority == 4 %}selected{% endif %}>4</option>
+                    </select>
+                </td>
+
+                <td>
+                    {{ i.request.po|default_if_none:"" }}
+                </td>
+                <td>
+                    {{ i.request.vendor|default_if_none:"" }}
+                </td>
+                <td>
+                    {{ i.request.get_priority_display }}
+                </td>
+                <td>
+                    {{ i.request.required_date }}
+                </td>
+                <td align="right" class="amount">
+
+                    <span id="rec_{{ i.request.id }}_amount">  {{ i.request.amount|floatformat:2|intcomma }} </span>
+
+                </td>
+
+                {# Week 1 #}
+                <td align="right" class="amount">
+                       <span id="rec_{{ i.request.id }}_w1">
+                        {% if i.request.payment_priority == 1 %}
+                            {{ i.request.amount|floatformat:2|intcomma }}
+                        {% endif %}
+                       </span>
+                </td>
+
+                <td align="right" class="amount">
+                       <span id="rec_{{ i.request.id }}_w2">
+                           {% if i.request.payment_priority == 2 %}
+                               {{ i.request.amount|floatformat:2|intcomma }}
+                           {% endif %}
+                       </span>
+                </td>
+
+
+                <td align="right" class="amount">
+                       <span id="rec_{{ i.request.id }}_w3">
+                            {% if i.request.payment_priority == 3 %}
+                                {{ i.request.amount|floatformat:2|intcomma }}
+                            {% endif %}
+                       </span>
+                </td>
+
+                <td align="right" class="amount">
+
+                       <span id="rec_{{ i.request.id }}_w4">
+                            {% if i.request.payment_priority == 4 %}
+                                {{ i.request.amount|floatformat:2|intcomma }}
+                            {% endif %}
+                       </span>
+
+                </td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+
+        <tfoot>
+        <tr class="small">
+            <th>1</th>
+            <th class="text-right"></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th class="text-right"></th>
+            <th class="text-right"></th>
+            <th class="text-right"></th>
+            <th class="text-right"></th>
+            <th class="text-right"></th>
+        </tr>
+        </tfoot>
+
+    </table>
+
+
+    {#  result summ table #}
+    {% comment %}
+    <table class=" table table-condensed ">
+        <tr class="small">
+             <td></td>
+            <td>
+                Total by week
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td align="right">
+                {{ week_sums.overdue|floatformat:2|intcomma }}
+            </td>
+            <td align="right">
+                {{ week_sums.week1|floatformat:2|intcomma }}
+            </td>
+            <td align="right">
+                {{ week_sums.week2|floatformat:2|intcomma }}
+            </td>
+            <td align="right">
+                {{ week_sums.week3|floatformat:2|intcomma }}
+            </td>
+            <td align="right">
+                {{ week_sums.week4|floatformat:2|intcomma }}
+            </td>
+        </tr>
+</table>
+{% endcomment %}
+    <br><br>
+    <div class="well well-sm1">
+        <div class="row">
+            <div class="col-sm-1">Priority 1:</div>
+            <div class="col-sm-2" align="right"><span id="priority_1_sum">0.00</span></div>
+            <div class="col-sm-6">
+                {#  <button type="button" class="btn btn-success btn-xs">Proceed with payment</button> #}
+                <a class="btn btn-success btn-xs" href="/finance/payments/proceed/1">Proceed with payment</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-1">Priority 2:</div>
+            <div class="col-sm-2" align="right"><span id="priority_2_sum">0.00</span></div>
+            <div class="col-sm-6"><a class="btn btn-warning btn-xs" href="/finance/payments/proceed/2">Proceed with
+                payment</a></div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-sm-1">Priority 3:</div>
+            <div class="col-sm-2" align="right"><span id="priority_3_sum">0.00</span></div>
+            <div class="col-sm-6">
+                <button type="button" class="btn btn-danger btn-xs">Proceed with payment</button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    {#  ============ Scripts ============ Scripts ============ Scripts ============ #}
+
+    <script>
+
+        function numVal(i) {
+            // converting i to number
+            if (typeof i === 'string') {
+                //var k = i.replace(/<.*?>/g," ").replace(/ +/g," ");
+                i = $(i).text();
+            }
+            return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+        }
+
+        function humanize(num) {
+            // format number to easy read form (123,456.78)
+            return num.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+        }
+
+        $(document).ready(function () {
+            var table = $("#request-table").DataTable({
+                paging: false,
+
+                "footerCallback": function (row, data, start, end, display) {
+                    var api = this.api(), data;
+
+                    // computing  Total sums
+                    var total = api.column(7).data().reduce(
+                            function (a, b) {
+                                return numVal(a) + numVal(b);
+                            }, 0);
+
+                    var week1Total = api.column(8).data().reduce(
+                            function (a, b) {
+                                return numVal(a) + numVal(b);
+                            }, 0);
+
+                    var week2Total = api.column(9).data().reduce(
+                            function (a, b) {
+                                return numVal(a) + numVal(b);
+                            }, 0);
+
+                    var week3Total = api.column(10).data().reduce(
+                            function (a, b) {
+                                return numVal(a) + numVal(b);
+                            }, 0);
+
+                    var week4Total = api.column(11).data().reduce(
+                            function (a, b) {
+                                return numVal(a) + numVal(b);
+                            }, 0);
+
+                    // Update footer by showing the total with the reference of the column index
+                    $(api.column(0).footer()).html('Total');
+                    $(api.column(7).footer()).html(humanize(total));
+                    $(api.column(8).footer()).html(humanize(week1Total));
+                    $(api.column(9).footer()).html(humanize(week2Total));
+                    $(api.column(10).footer()).html(humanize(week3Total));
+                    $(api.column(11).footer()).html(humanize(week4Total));
+                },
+
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy',
+                    // 'csv',
+                    // 'excel',
+                    // 'pdf',
+                    'print'],
+                "order": [[1, "asc"], [5, "desc"]],
+
+                // "pagingType": "full_numbers"
+            });
+
+            $("#tbl-receivables").DataTable({
+                paging: false,
+                searching: false,
+
+                "footerCallback": function (row, data, start, end, display) {
+                    var api = this.api(), data;
+                    // computing  Total sums
+                    var overdueTotal = api.column(7).data().reduce(
+                            function (a, b) {
+                                return numVal(a) + numVal(b);
+                            }, 0);
+
+                    var weekCurrentTotal = api.column(8).data().reduce(
+                            function (a, b) {
+                                return numVal(a) + numVal(b);
+                            }, 0);
+
+                    var week2Total = api.column(9).data().reduce(
+                            function (a, b) {
+                                return numVal(a) + numVal(b);
+                            }, 0);
+
+                    var week3Total = api.column(10).data().reduce(
+                            function (a, b) {
+                                return numVal(a) + numVal(b);
+                            }, 0);
+
+                    var week4Total = api.column(11).data().reduce(
+                            function (a, b) {
+                                return numVal(a) + numVal(b);
+                            }, 0);
+
+                    // Update footer by showing the total with the reference of the column index
+                    $(api.column(0).footer()).html('Total');
+                    $(api.column(7).footer()).html(humanize(overdueTotal));
+                    $(api.column(8).footer()).html(humanize(weekCurrentTotal));
+                    $(api.column(9).footer()).html(humanize(week2Total));
+                    $(api.column(10).footer()).html(humanize(week3Total));
+                    $(api.column(11).footer()).html(humanize(week4Total));
+                },
+
+            });
+
+            $("#priority_1_sum").html(calculateSumByPriority(1).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+            $("#priority_2_sum").html(calculateSumByPriority(2).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+            $("#priority_3_sum").html(calculateSumByPriority(3).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+
+        });
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+
+        function changePriority(obj) {
+
+            var val = obj.value;
+            var record_id = obj.id.replace("change_priority_", "");
+
+            var element = "#pay_priority_" + record_id;
+            var name = '#rec_' + record_id + '_amount';
+            var amount = $(name).html();
+
+            var csrftoken = getCookie('csrftoken');
+
+            for (var i = 1; i <= 4; i++) {
+                $('#rec_' + record_id + '_w' + i).html('');
+            }
+
+            $.ajax({
+                url: "ajax/updaterequest/",
+                type: "POST",
+                data: {
+                    id: record_id,
+                    priority: val,
+                    csrfmiddlewaretoken: csrftoken
+                },
+                success: function (result) {
+                    $(element).html(result);
+
+                    var sumP1 = calculateSumByPriority(1);
+                    var sumP2 = calculateSumByPriority(2);
+                    var sumP3 = calculateSumByPriority(3);
+                    var sumP4 = calculateSumByPriority(4);
+
+                    $("#priority_1_sum").html(humanize(sumP1));
+                    $("#priority_2_sum").html(humanize(sumP2));
+                    $("#priority_3_sum").html(humanize(sumP3));
+                    $("#priority_4_sum").html(humanize(sumP4));
+
+                    // Updating cell value
+                    $('#rec_' + record_id + '_w' + val).html(amount);
+
+                    // Updating footer
+                    var table = $('#request-table').DataTable();
+                    $(table.column(8).footer()).html(humanize(sumP1));
+                    $(table.column(9).footer()).html(humanize(sumP2));
+                    $(table.column(10).footer()).html(humanize(sumP3));
+                    $(table.column(11).footer()).html(humanize(sumP4));
+                }
+            });
+            {#  // var inputi = $("#request-table > tfoot th:nth-child(9)").text(); // console.log(inputi); #}
+        }
+
+        function calculateSumByPriority(priority) {
+            // var table = $("#request-table");
+            var total_rows = 0;
+            var sum = 0.0;
+            var names = "";
+
+            $('#request-table > tbody  > tr').each(function () {
+                var record_id = this.id.replace("request_", "");
+                var record_priority = $("#pay_priority_" + record_id).html();
+
+                if (record_priority == priority) {
+                    var amount = parseFloat($("#rec_" + record_id + "_amount").html().replace(/,/g, ''));
+                    //  console.log(amount);
+                    // names += this.id;
+                    sum += amount;
+                }
+            });
+            return sum;
+        }
+
+    </script>
+
+
+{% endblock %}

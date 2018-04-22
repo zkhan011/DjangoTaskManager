@@ -1,0 +1,49 @@
+<div class="well">
+    <h3>Personal Tasks update:</h3>
+
+   Performance: {{ tasks.performance|floatformat:1 }} %
+  Top Urgent - Performance :{{tasks.priorityperformance|floatformat:1 }} % 
+
+    <table class="table table-hover  table-condensed table-striped display compact">
+        <thead>
+        <tr>
+            <th>Status</th>
+            <th>Tasks</th>
+        </tr>
+        </thead>
+        <tbody>
+         <tr>
+            <td><span class="label label-danger">Failed:</span></td>
+            <td>{{ tasks.failed }}</td>
+        </tr>
+        <tr>
+            <td><span class="label label-info">Total:</span></td>
+            <td> {{ tasks.total }}</td>
+        </tr>
+        <tr>
+            <td><span class="label label-primary">Progress:</span></td>
+            <td> {{ tasks.progress }}</td>
+        </tr>
+        <tr>
+            <td><span class="label label-success">Completed:</span></td>
+            <td>{{ tasks.completed }}</td>
+        </tr>
+        <tr>
+            <td><span class="label label-warning">Blocked:</span></td>
+            <td>{{ tasks.blocked }}</td>
+        </tr>
+        <tr>
+            <td><span class="label label-danger">Not started:</span></td>
+            <td>{{ tasks.not_started }}</td>
+        </tr>
+         <tr>
+            <td><span class="label label-default">Canceled:</span></td>
+            <td> {{ tasks.canceled }}</td>
+        </tr>
+
+        </tbody>
+
+    </table>
+
+
+</div>

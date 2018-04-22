@@ -1,0 +1,108 @@
+<div class="well">
+    <h4>Tasks status update:</h4>
+
+      <table>
+    <thead>
+        <tr>
+            <th  class="text-center" >Name</th>
+            <th class="text-center" >Total Tasks</th>
+            <th  class="text-center" colspan="4">Priority Low</th>
+            <th  class="text-center" colspan="4">Priority Mid</th>
+            <th  class="text-center" colspan="4">Priority High</th>
+            <th  class="text-center" colspan="4">Priority Top urgent</th>
+            
+            <th  class="text-center">Total Completed</th>
+            <th  class="text-center">Performance</th>
+            <th  class="text-center">Overall Performance</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th  class="text-center" ></th>
+             <th class="text-center"><span class="label label-info">total</span></th>
+             <th class="text-center"><span class="label label-success">completed</span></th>
+             <th class="text-center"><span class="label label-warning">on hold</span></th>
+             <th class="text-center"><span class="label label-primary">canceled</span></th>
+
+             <th class="text-center"><span class="label label-info">total</span></th>
+             <th class="text-center"><span class="label label-success">completed</span></th>
+             <th class="text-center"><span class="label label-warning">on hold</span></th>
+             <th class="text-center"><span class="label label-primary">canceled</span></th>
+
+             <th class="text-center"><span class="label label-info">total</span></th>
+             <th class="text-center"><span class="label label-success">completed</span></th>
+             <th class="text-center"><span class="label label-warning">on hold</span></th>
+             <th class="text-center"><span class="label label-primary">canceled</span></th>
+     
+             <th class="text-center"><span class="label label-info">total</span></th>
+             <th class="text-center"><span class="label label-success">completed</span></th>
+             <th class="text-center"><span class="label label-warning">on hold</span></th>
+             <th class="text-center"><span class="label label-primary">canceled</span></th>
+
+
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+     {% for r in data %}
+
+        <tr>
+            <th><a href="/tasks/list?assignee={{ r.user.id }}" >{{ r.user.first_name }} {{ r.user.last_name }}</a></th>
+            <td class="text-center">{{ r.total }}</td>
+            <td class="text-center">{{ r.totallow }}</td>
+            <td class="text-center">{{ r.lowcomplete }}</td>
+            <td class="text-center">{{ r.lowblocked  }}</td>
+            <td class="text-center">{{ r.lowcanceled }}</td>
+           
+            <td class="text-center">{{ r.totalmid }}</td>
+            <td class="text-center">{{ r.midcomplete }}</td>
+            <td class="text-center">{{ r.midblocked  }}</td>
+            <td class="text-center">{{ r.midcanceled }}</td>
+            
+            <td class="text-center">{{ r.totalhigh }}</td>
+            <td class="text-center">{{ r.highcomplete }}</td>
+            <td class="text-center">{{ r.highblocked  }}</td>
+            <td class="text-center">{{ r.highcanceled }}</td>
+
+            <td class="text-center">{{ r.totaltop }}</td>
+            <td class="text-center">{{ r.topcomplete }}</td>
+            <td class="text-center">{{ r.topblocked  }}</td>
+            <td class="text-center">{{ r.topcanceled }}</td>
+ 
+
+            
+            <td class="text-center">{{ r.completed }}</td>  
+            <td class="text-center">{{ r.performance|floatformat:1}}</td>
+            <td class="text-center">{{ r.performance|floatformat:1  }}%</td>
+
+        </tr>
+      {% endfor %}
+    </tbody>
+</table>
+ <style>
+
+th, td {
+    font-weight:normal;
+    padding:5px;
+    width:120px;
+    vertical-align:top;
+}
+th {
+    background:#00B0F0;
+}
+tr + tr th, tbody th {
+    background:#DAEEF3;
+}
+tr + tr, tbody {
+    text-align:center;
+}
+table, th, td {
+    border:solid 1px;
+    border-collapse:collapse;
+    table-layout:fixed;
+}
+</style>                 
+
+
+</div>

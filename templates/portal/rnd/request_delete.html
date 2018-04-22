@@ -1,0 +1,40 @@
+{% extends "portal/base.html" %}
+
+
+
+{% block container %}
+    <!-- Main component for a primary marketing message or call to action -->
+
+ <h3>Delete Request</h3>
+    <div class="panel panel-default">
+
+
+
+        <div class="panel-body">
+
+          <form class="form-horizontal" role="form" action="/rnd/request/create" method="post">
+            {% csrf_token %}
+
+
+
+           {# Submit #}
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-4">
+                    <button type="submit" class="btn btn-primary">Create request</button> <a href="/rnd/requests" class="btn btn-default" role="button">Cancel</a>
+
+                </div>
+            </div>
+
+
+          </form>
+
+
+
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}

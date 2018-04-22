@@ -1,0 +1,122 @@
+{% extends "portal/base.html" %}
+{# create new Task #}
+
+{% block title %} Create new task {% endblock %}
+
+
+{% block container %}
+
+    <h3>Create Task</h3>
+    <div class="panel panel-default">
+
+
+        <div class="panel-body">
+
+            <form class="form-horizontal" role="form" action="/tasks/create" method="post">
+                {% csrf_token %}
+
+
+                {# Start Date: #}
+                <div class="form-group  {% if form.start_date.errors %}  has-error {% endif %}">
+                    <label class="control-label col-sm-2" for="id_start_date">Start Date*:</label>
+
+                    <div class="col-sm-3">
+                        {{ form.start_date }}
+                        {{ form.start_date.errors }}
+                    </div>
+                </div>
+
+
+                {# Required Date: #}
+                <div class="form-group  {% if form.target_completion_date.errors %}  has-error {% endif %}">
+                    <label class="control-label col-sm-2" for="id_target_completion_date">Required Date*:</label>
+
+                    <div class="col-sm-3">
+                        {{ form.target_completion_date }}
+                        {{ form.target_completion_date.errors }}
+                    </div>
+                </div>
+
+
+                {# Details : #}
+                <div class="form-group   {% if form.details.errors %}  has-error {% endif %}">
+                    <label class="control-label col-sm-2 {# input-sm #}" for="status">Task Details:</label>
+
+                    <div class="col-sm-4">
+                        {{ form.details }}
+                        {{ form.details.errors }}
+                    </div>
+                </div>
+
+                {# PO : #}
+                <div class="form-group   {% if form.po.errors %}  has-error {% endif %}">
+                    <label class="control-label col-sm-2 {# input-sm #}" for="id_po">PO (if any):</label>
+
+                    <div class="col-sm-4">
+                        {{ form.po }}
+                        {{ form.po.errors }}
+                    </div>
+                </div>
+
+                {# Assignee #}
+                <div class="form-group   {% if form.assignee.errors %}  has-error {% endif %}">
+                    <label class="control-label col-sm-2 {# input-sm #}" for="id_assignee">Assignee*:</label>
+
+                    <div class="col-sm-3">
+                        {{ form.assignee }}
+                        {{ form.assignee.errors }}
+                    </div>
+                </div>
+
+                {# Department #}
+                <div class="form-group   {% if form.department.errors %}  has-error {% endif %}">
+                    <label class="control-label col-sm-2 {# input-sm #}" for="id_department">Department:</label>
+
+                    <div class="col-sm-3">
+                        {{ form.department }}
+                        {{ form.department.errors }}
+                    </div>
+                </div>
+
+
+
+
+
+
+                {# Submit #}
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-4">
+                        <button type="submit" class="btn btn-primary">Create task</button>
+                        <a href="/tasks/list" class="btn btn-default" role="button">Cancel</a>
+
+                    </div>
+                </div>
+
+
+            </form>
+
+
+        </div>
+    </div>
+
+
+    <script>
+        $(function () {
+            $("#id_start_date").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+             $("#id_target_completion_date").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            {#   //$("#id_end_date").datepicker('setDate', new Date()); #}
+            {#// if ($("#id_date").val() === ""){   #}
+            {#//     $("#id_date").datepicker('setDate', new Date()); #}
+            {#//}#}
+        });
+
+    </script>
+
+
+{% endblock %}

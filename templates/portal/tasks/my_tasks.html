@@ -1,0 +1,56 @@
+{% extends "portal/base.html" %}
+
+
+
+{% block container %}
+    <!-- Main component for a primary marketing message or call to action -->
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>My Tasks</strong></div>
+        <div class="panel-body">
+
+
+            <table class=" table table-condensed table-hover table-bordered table-striped">
+                <thead>
+                <tr class="result-header">
+                    <th>Issue</th>
+                    <th>Action</th>
+                    <th>Owner</th>
+                    <th>By When</th>
+                    <th>RAG Status</th>
+                    <th>Comment</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for p in projects %}
+                    <tr class="">
+                        <td>
+                            <a href="/project/{{ p.id }}"> {{ p.name }}</a>
+                        </td>
+                        <td>
+                            {{ p.lead_designer }}
+                        </td>
+                        <td>
+                            {{ p.due_date }}
+                        </td>
+                        <td>
+                            {% for m in p.required_models.all %}
+                                {{ m.name }}<br>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}

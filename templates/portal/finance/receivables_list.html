@@ -1,0 +1,89 @@
+{# finance requests list #}
+{% extends "portal/base.html" %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block additional_head_links %}
+    <link rel="stylesheet" type="text/css" href="{% static "datatables/datatables.min.css" %}"/>
+    <script type="text/javascript" src="{% static "datatables/datatables.min.js" %}"></script>
+{% endblock %}
+
+{% block title %}
+   Receivables - {{ PROJECT_NAME }}  v{{ PROJECT_VERSION }}
+{% endblock %}
+
+
+{% block container %}
+    <!-- Main component for a primary marketing message or call to action -->
+    <h3>
+       Receivables
+    </h3>
+
+    <a href="/finance/receivables/create" class="btn btn-primary" role="button">Create record</a>
+    <a href="/finance/receivables" class="btn btn-success">Refresh</a>
+    <div>&nbsp</div>
+
+       <table id="resulttbl" class=" table table-condensed table-hover table-bordered1 table-striped">
+                <thead>
+                <tr class="result-header">
+                    <th>Number</th>
+                    <th>Amount, AED</th>
+                    <th>Date</th>
+                    <th>Partner</th>
+                    <th>Comments</th>
+                    <th>Author</th>
+                    <th>Created</th>
+                </tr>
+                </thead>
+
+
+                <tbody>
+                {% for r in records %}
+                    <tr class="">
+                        <td>
+                            <a href="/finance/receivables/{{ r.id }}/details">{{ r.number }}</a>
+                        </td>
+                        <td>
+                            {{ r.amount|floatformat:2|intcomma }}
+                        </td>
+                         <td>
+                            {{ r.date }}
+                        </td>
+                        <td>
+                            {{ r.partner }}
+                        </td>
+                        <td>
+                            {{ r.comments|truncatewords:5 }}
+                        </td>
+                        <td>
+                            {{ r.author.first_name }} {{ r.author.last_name }}
+                        </td>
+                        <td>
+                            {{ r.created }}
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+
+
+    <script>
+        $("#resulttbl").DataTable({
+            paging: true,
+            dom: 'Bfrtip',
+            buttons: [
+                'copy',
+                // 'csv',
+                //'excel',
+               // 'pdf',
+                'print'
+            ],
+            // "pagingType": "full_numbers"
+        });
+    </script>
+
+
+
+{% endblock %}

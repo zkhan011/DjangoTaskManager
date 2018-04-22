@@ -1,0 +1,133 @@
+{% extends "portal/base.html" %}
+
+
+
+{% block container %}
+    <!-- Main component for a primary marketing message or call to action -->
+
+    <h3>Create Funds Request</h3>
+    <div class="panel panel-default">
+
+
+        <div class="panel-body">
+
+            <form class="form-horizontal" role="form" action="/finance/request/create" method="post">
+                {% csrf_token %}
+
+                {# Amount: #}
+                <div class="form-group  {% if form.amount.errors %}  has-error {% endif %}">
+                    <label class="control-label col-sm-2" for="id_amount">Amount, AED*:</label>
+
+                    <div class="col-sm-3">
+                        {{ form.amount }}
+                        {{ form.amount.errors }}
+                        {# {{ form.uid.errors.as_text }} #}
+                    </div>
+                </div>
+
+                {# Payment Mode #}
+                <div class="form-group   {% if form.payment_mode.errors %}  has-error {% endif %}">
+                    <label class="control-label col-sm-2 {# input-sm #}" for="id_payment_mode">Mode of payment*:</label>
+
+                    <div class="col-sm-3">
+                        {{ form.payment_mode }}
+                        {{ form.payment_mode.errors }}
+                    </div>
+                </div>
+
+                {# Required Date: #}
+                <div class="form-group  {% if form.required_date.errors %}  has-error {% endif %}">
+                    <label class="control-label col-sm-2" for="id_required_date">Required Date*:</label>
+
+                    <div class="col-sm-3">
+                        {{ form.required_date }}
+                        {{ form.required_date.errors }}
+                    </div>
+                </div>
+
+
+                {# Project : #}
+                <div class="form-group   {% if form.project.errors %}  has-error {% endif %}">
+                    <label class="control-label col-sm-2 {# input-sm #}" for="status">Project (if any):</label>
+
+                    <div class="col-sm-4">
+                        {{ form.project }}
+                        {{ form.project.errors }}
+                    </div>
+                </div>
+
+                {# PO : #}
+                <div class="form-group   {% if form.po.errors %}  has-error {% endif %}">
+                    <label class="control-label col-sm-2 {# input-sm #}" for="id_po">PO (if any):</label>
+
+                    <div class="col-sm-4">
+                        {{ form.po }}
+                        {{ form.po.errors }}
+                    </div>
+                </div>
+
+                {# Vendor #}
+                <div class="form-group   {% if form.vendor.errors %}  has-error {% endif %}">
+                    <label class="control-label col-sm-2 {# input-sm #}" for="id_vendor">Vendor:</label>
+
+                    <div class="col-sm-4">
+                        {{ form.vendor }}
+                        {{ form.vendor.errors }}
+                    </div>
+                </div>
+
+
+                {# Comments: #}
+                <div class="form-group   {% if form.comments.errors %}  has-error {% endif %}">
+                    <label class="control-label col-sm-2 {# input-sm #}" for="status">Comments*:</label>
+
+                    <div class="col-sm-4">
+                        {{ form.comments }}
+                        {{ form.comments.errors }}
+                    </div>
+                </div>
+
+                {# Priority #}
+                <div class="form-group   {% if form.priority.errors %}  has-error {% endif %}">
+                    <label class="control-label col-sm-2 {# input-sm #}" for="status">Priority*:</label>
+
+                    <div class="col-sm-4">
+                        {{ form.priority }}
+                        {{ form.priority.errors }}
+                    </div>
+                </div>
+
+
+                {# Submit #}
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-4">
+                        <button type="submit" class="btn btn-primary">Create record</button>
+                        <a href="/finance/requests" class="btn btn-default" role="button">Cancel</a>
+
+                    </div>
+                </div>
+
+
+            </form>
+
+
+        </div>
+    </div>
+
+
+    <script>
+        $(function () {
+            $("#id_required_date").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            {#   //$("#id_end_date").datepicker('setDate', new Date()); #}
+            {#// if ($("#id_date").val() === ""){   #}
+            {#//     $("#id_date").datepicker('setDate', new Date()); #}
+            {#//}#}
+        });
+
+    </script>
+
+
+{% endblock %}

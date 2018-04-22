@@ -1,0 +1,57 @@
+{% extends "portal/base.html" %}
+
+
+
+{% block container %}
+    <!-- Main component for a primary marketing message or call to action -->
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>Model: {{ model }}</strong></div>
+        <div class="panel-body">
+
+
+            <table class=" table table-condensed table-hover table-bordered1 table-striped">
+                <thead>
+                <tr class="result-header">
+                    <th>Name</th>
+                    <th>Author</th>
+                    <th>Created</th>
+                    <th>Files Path</th>
+                     <th>Files Qty</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr class="">
+                        <td>
+                            {{ model.name }}
+                        </td>
+                        <td>
+                            {{ model.author }}
+                        </td>
+                        <td>
+                            {{ model.created }}
+                        </td>
+                         <td>
+                            {{ model.files_path }}
+                        </td>
+                         <td>
+                            {{ model.files_qty }}
+                        </td>
+
+                    </tr>
+
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}

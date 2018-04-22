@@ -1,0 +1,260 @@
+{% if edit_privilege == 'owner' %}
+    <form class="form-horizontal" role="form" action="task/ajax/edit/{{ task.id }}" method="post" id="ajaxEditForm">
+        {% csrf_token %}
+
+        {# Start Date: #}
+        <div class="form-group  {% if form.start_date.errors %}  has-error {% endif %}">
+            <label class="control-label col-sm-2" for="id_start_date">Start Date*:</label>
+
+            <div class="col-sm-3">
+                {{ form.start_date }}
+                {{ form.start_date.errors }}
+            </div>
+        </div>
+
+        {# Required Date: #}
+        <div class="form-group  {% if form.target_completion_date.errors %}  has-error {% endif %}">
+            <label class="control-label col-sm-2" for="id_target_completion_date">Required Date*:</label>
+
+            <div class="col-sm-3">
+                {{ form.target_completion_date }}
+                {{ form.target_completion_date.errors }}
+            </div>
+        </div>
+
+        {# Prioroty: #}
+        <div class="form-group  {% if form.priority.errors %}  has-error {% endif %}">
+            <label class="control-label col-sm-2" for="id_priority">Priority*:</label>
+
+            <div class="col-sm-3">
+                {{ form.priority }}
+                {{ form.priority.errors }}
+            </div>
+        </div>
+
+        {# Details : #}
+        <div class="form-group   {% if form.details.errors %}  has-error {% endif %}">
+            <label class="control-label col-sm-2 {# input-sm #}" for="status">Task Details:</label>
+
+            <div class="col-sm-6">
+                {{ form.details }}
+                {{ form.details.errors }}
+            </div>
+        </div>
+
+        {# Project : #}
+        <div class="form-group   {% if form.project.errors %}  has-error {% endif %}">
+            <label class="control-label col-sm-2 {# input-sm #}" for="id_project">Project:</label>
+
+            <div class="col-sm-4">
+                {{ form.project }}
+                {{ form.project.errors }}
+            </div>
+        </div>
+
+        {# PO : #}
+        <div class="form-group   {% if form.po.errors %}  has-error {% endif %}">
+            <label class="control-label col-sm-2 {# input-sm #}" for="id_po">PO (if any):</label>
+
+            <div class="col-sm-4">
+                {{ form.po }}
+                {{ form.po.errors }}
+            </div>
+        </div>
+
+        {# Assignee #}
+        <div class="form-group   {% if form.assignee.errors %}  has-error {% endif %}">
+            <label class="control-label col-sm-2 {# input-sm #}" for="id_assignee">Assignee*:</label>
+
+            <div class="col-sm-3">
+                {{ form.assignee }}
+                {{ form.assignee.errors }}
+            </div>
+        </div>
+
+        {# Department #}
+        <div class="form-group   {% if form.department.errors %}  has-error {% endif %}">
+            <label class="control-label col-sm-2 {# input-sm #}" for="id_department">Department:</label>
+
+            <div class="col-sm-3">
+                {{ form.department }}
+                {{ form.department.errors }}
+            </div>
+        </div>
+
+        {# Status : #}
+        <div class="form-group   {% if form.status.errors %}  has-error {% endif %}">
+            <label class="control-label col-sm-2 {# input-sm #}" for="id_status">Status:</label>
+
+            <div class="col-sm-4">
+                {{ form.status }}
+                {{ form.status.errors }}
+            </div>
+        </div>
+
+        {# Comments : #}
+        <div class="form-group   {% if form.comments.errors %}  has-error {% endif %}">
+            <label class="control-label col-sm-2 {# input-sm #}" for="status">Task Comments:</label>
+
+            <div class="col-sm-6">
+                {{ form.comments }}
+                {{ form.comments.errors }}
+            </div>
+        </div>
+
+        {# Completion Date : #}
+        <div class="form-group   {% if form.completion_date.errors %}  has-error {% endif %}">
+            <label class="control-label col-sm-2 {# input-sm #}" for="id_completion_date">Completion
+                Date:</label>
+
+            <div class="col-sm-4">
+                {{ form.completion_date }}
+                {{ form.completion_date.errors }}
+            </div>
+        </div>
+
+        {# Completed : #}
+        <div class="form-group   {% if form.completed.errors %}  has-error {% endif %}" >
+            <label class="control-label col-sm-6 {# input-sm #}" for="id_completed">Check to remove(archive)from my task list after performance calculation for the month:</label>
+
+            <div class="col-sm-4">
+                {{ form.completed }}
+                {{ form.completed.errors }}
+            </div>
+        </div>
+
+        {% comment %}
+ <div class="form-group   {% if form.completed.errors %}  has-error {% endif %}">
+        <label class="control-label col-sm-2 {# input-sm #}" for="id_test_date">Test:</label>
+
+        <div class="col-sm-6">
+           <input id="id_test_date" data-validation="date" data-validation-format="yyyy-mm-dd" data-validation-help="Enter date in next format: yyyy-mm-dd " type="text">
+        </div>
+    </div>
+{% endcomment %}
+
+        {# Submit #}
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-6">
+                <button type="submit" class="btn btn-primary">Update task</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                {#   <button onclick="return validateForm();"  type="button" class="btn btn-warning">Validate</button>#}
+                {#<a href="/tasks/list" class="btn btn-default" role="button">Cancel</a>  #}
+            </div>
+        </div>
+    </form>
+
+{% elif edit_privilege == 'assignee' %}
+
+
+    <div class="row">
+        <div class="col-sm-2 text-right">Task Details:</div>
+        <div class="col-sm-6"> {{ task.details }}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2 text-right">Assignee:</div>
+        <div class="col-sm-4"> {{ task.assignee.first_name }} {{ task.assignee.last_name }}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2 text-right">Department:</div>
+        <div class="col-sm-4"> {{ task.department }}</div>
+    </div>
+    <div>&nbsp;</div>
+
+    <form class="form-horizontal" role="form" action="task/ajax/edit/{{ task.id }}" method="post" id="ajaxEditForm">
+        {% csrf_token %}
+        {# Status : #}
+        <div class="form-group   {% if form.status.errors %}  has-error {% endif %}">
+            <label class="control-label col-sm-2 {# input-sm #}" for="id_status">Status:</label>
+
+            <div class="col-sm-4">
+                {{ form.status }}
+                {{ form.status.errors }}
+            </div>
+        </div>
+
+        {# Comments : #}
+        <div class="form-group   {% if form.comments.errors %}  has-error {% endif %}">
+            <label class="control-label col-sm-2 {# input-sm #}" for="status">Task Comments:</label>
+
+            <div class="col-sm-6">
+                {{ form.comments }}
+                {{ form.comments.errors }}
+            </div>
+        </div>
+
+        {# Submit #}
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-6">
+                <button type="submit" class="btn btn-primary">Update task</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                {#   <button onclick="return validateForm();"  type="button" class="btn btn-warning">Validate</button>#}
+                {#<a href="/tasks/list" class="btn btn-default" role="button">Cancel</a>  #}
+            </div>
+        </div>
+
+    </form>
+
+
+
+{% elif edit_privilege == 'read' %}
+
+   {# read only #}
+
+    <div class="row">
+        <div class="col-sm-2 text-right">Task Details:</div>
+        <div class="col-sm-6"> {{ task.details }}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2 text-right">Assignee:</div>
+        <div class="col-sm-4"> {{ task.assignee.first_name }} {{ task.assignee.last_name }}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2 text-right">Department:</div>
+        <div class="col-sm-4"> {{ task.department }}</div>
+    </div>
+    <div>&nbsp;</div>
+
+{% endif %}
+
+<script>
+
+
+    $(function () {
+        $("#id_start_date").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+
+        $("#id_target_completion_date").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+
+        $("#id_completion_date").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+    });
+
+
+    $(document).off('submit', '#ajaxEditForm');//, submitForm); Unregister the onSubmit event!
+
+    $(document).on('submit', '#ajaxEditForm', function () {
+        $.ajax({
+            type: $(this).attr('method'),
+            url: this.action,
+            data: $(this).serialize(),
+            context: this,
+            success: function (data, status) {
+                if (data.substring(0, 3) == '<td') {
+                    $("#rec_{{ task.id }}").html(data);
+                    $("#taskEditModalWin").modal('hide');
+                }
+                else {
+                    $('#taskEditFormDiv').html(data);
+                }
+            }
+        });
+        return false;
+    });
+
+
+</script>

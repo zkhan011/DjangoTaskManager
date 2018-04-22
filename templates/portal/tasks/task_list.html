@@ -1,0 +1,99 @@
+{% extends "portal/base.html" %}
+
+{% load staticfiles %}
+{# {% load humanize %} #}
+
+{% block additional_head_links %}
+    <link rel="stylesheet" type="text/css" href="{% static "datatables/datatables.min.css" %}"/>
+    <script type="text/javascript" src="{% static "datatables/datatables.min.js" %}"></script>
+{% endblock %}
+
+
+{% block container %}
+    <!-- Main component for a primary marketing message or call to action -->
+
+    <h3>
+        {% if can_manage %}
+            Pending Tasks
+        {% else %}
+            My Pending Tasks
+        {% endif %}
+    </h3>
+
+  {% if can_manage %}  <a href="/tasks/create" class="btn btn-primary" role="button">Create task</a>  {% endif %}
+    <a href="/tasks/list" class="btn btn-success">Refresh</a>
+    <div>&nbsp</div>
+
+
+
+
+
+    <div class="">
+
+        <table id="tasks-table" class="table table-condensed table-hover table-bordered1 table-striped display compact">
+            <thead>
+            <tr class="result-header small">
+                <th>Ref.</th>
+                <th>Start Date</th>
+                <th>Owner</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Assignee</th>
+                <th>Comments</th>
+                <th>Duration (days)</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for t in tasks %}
+                <tr class="small">
+                    <td>
+                        <a href="/tasks/{{ t.id }}/details"> {{ t.number }}</a>
+                    </td>
+                    <td>
+                        {{ t.start_date }}
+                    </td>
+                    <td>
+                        {{ t.owner.first_name }} {{ t.owner.last_name }}
+                    </td>
+                    <td>
+                        {{ t.details|truncatewords:12 }}
+                    </td>
+
+                    <td> {{ t.get_status_display }}  </td>
+                    <td> {{ t.assignee.first_name }} {{ t.assignee.last_name }}  </td>
+                    <td> {{ t.comments|default_if_none:''|truncatewords:12 }}  </td>
+                    <td></td>
+
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
+    </div>
+
+
+
+
+    <script>
+
+        $("#tasks-table").DataTable({
+            // paging: false
+            paging: false,
+            dom: 'Bfrtip',
+            buttons: [
+                'copy',
+                // 'csv',
+                //'excel',
+                //'pdf',
+                'print'
+            ],
+            // "pagingType": "full_numbers"
+        });
+
+    </script>
+
+
+{% endblock %}

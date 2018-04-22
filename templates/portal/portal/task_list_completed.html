@@ -1,0 +1,146 @@
+{% extends "portal/base.html" %}
+
+{% load staticfiles %}
+{# {% load humanize %} #}
+
+{% block additional_head_links %}
+    <link rel="stylesheet" type="text/css" href="{% static "datatables/datatables.min.css" %}"/>
+    <script type="text/javascript" src="{% static "datatables/datatables.min.js" %}"></script>
+    {# FixedHeader #}
+    <script type="text/javascript" src="{% static "datatables/FixedHeader-3.1.3/js/dataTables.fixedHeader.js" %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static "datatables/FixedHeader-3.1.3/css/fixedHeader.bootstrap.css" %}"/>
+{% endblock %}
+
+
+{% block container %}
+    <!-- Main component for a primary marketing message or call to action -->
+
+    <h3>
+        {% if can_manage %}
+          {% if request.user == assignee %} My {% endif %}   Completed Tasks
+            {% if assignee %} <small> Assignee is {{ assignee.first_name }} {{ assignee.last_name }}</small> {% endif %}
+            {% if owner %} <small> Owner is {{ owner.first_name }} {{ owner.last_name }}</small> {% endif %}
+        {% else %}
+            My Completed Tasks
+        {% endif %}
+    </h3>
+
+    {% if can_manage %}  <a href="/tasks/create" class="btn btn-primary" role="button">Create task</a>
+
+    {% endif %}
+
+     {% if request.user == assignee %}
+    {% else %}
+         <a href="/tasks/list?assignee={{ request.user.id }}" class="btn btn-info">My Tasks</a>
+    {% endif %}
+
+
+    {% if filter %}
+        <a href="/tasks/list" class="btn btn-warning">Reset selection</a>
+    {% else %}
+
+    {% endif %}
+        <a href="{{ request.get_full_path }}" class="btn btn-success">Refresh</a>
+
+    <div>&nbsp;
+
+
+
+    </div>
+
+
+
+    {% if completed_tasks %}
+
+        <div>&nbsp;</div>
+
+
+        <div class="">
+            <table id="completed-tasks-table"
+                   class="table table-condensed table-hover table-bordered1 table-striped display compact">
+                <thead>
+                <tr class="result-header small">
+                    <th>Ref.</th>
+                    <th>Start Date</th>
+                    <th>Owner</th>
+                    <th>Description</th>
+                    <th>Project</th>
+                    <th>Status</th>
+                    <th>Assignee</th>
+                    <th>Comments</th>
+                    <th>Priority</th>
+                    <th>Deadline</th>
+                    <th>Duration</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for t in completed_tasks %}
+                    <tr class="small">
+                        <td>
+                            <a href="/tasks/{{ t.id }}/details"> {{ t.number }}</a>
+                        </td>
+                        <td>
+                            {{ t.start_date }}
+                        </td>
+                        <td>
+                            {{ t.owner.first_name }} {{ t.owner.last_name }}
+                        </td>
+                        <td>
+                            {{ t.details|truncatewords:12 }}
+                        </td>
+                        <td>
+                            {{ t.project | default_if_none:'' }}
+                        </td>
+                        <td>
+                            {% if t.status == 'PR' %}
+                                <span class="label label-primary">
+                            {% elif t.status == 'BL' %}
+                                <span class="label label-warning">
+                            {% elif t.status == 'CM' %}
+                                <span class="label label-success">
+                            {% else %}
+                                <span class="label label-danger"> {# Not Started / Default #}
+                            {% endif %}
+                            {{ t.get_status_display }}</span>
+                        </td>
+                        <td> {{ t.assignee.first_name }} {{ t.assignee.last_name }}  </td>
+                        <td> {{ t.comments|default_if_none:''|truncatewords:12 }}  </td>
+                        <td>
+                            {{ t.get_priority_display }}
+                        </td>
+                        <td>
+                            {{ t.target_completion_date|date:'Y-m-d' }}
+                        </td>
+                        <td>
+                            {{ t.start_date|timesince:t.completion_date }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    <script>
+        $(document).ready(function () {
+
+
+
+            $("#completed-tasks-table").DataTable({
+                // paging: false
+                paging: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy',
+                    // 'csv',
+                    //'excel',
+                    //'pdf',
+                    'print'
+                ]
+                // "pagingType": "full_numbers"
+            });
+        });
+    </script>
+
+{% endblock %}

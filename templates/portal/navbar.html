@@ -1,0 +1,179 @@
+<!-- Menu / Navbar -->
+<nav class="navbar navbar-default navbar-static-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">{{ PROJECT_NAME }}</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="{% ifequal main_menu "" %} active {% endifequal %} {% ifequal main_menu "vms" %} active {% endifequal %}  ">
+                    <a href="/">Home</a></li>
+
+
+                {# TASKS #}
+                <li class="dropdown {% ifequal main_menu "tasks" %} active {% endifequal %}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Tasks<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/tasks/list">Tasks</a></li>
+                        <li><a href="/tasks/create">Create a Task</a></li>
+                        <li><a href="/projects/list">Projects</a></li>
+                        <li><a href="/projects/create">Create a Project</a></li>
+                        <li><a href="/tasks/dashboard">Dashboard</a></li>
+                        <li><a href="/tasks/dashboard_new">New  Dashboard</a></li>
+
+
+                        <li><a href="/tasks/list/completed">Completed Tasks</a></li>
+                         <li><a href="/tasks/list/canceled">Canceled Tasks</a></li>
+                         <li><a href="/tasks/report">Tasks Report</a></li>
+                    </ul>
+                </li>
+
+                {# Finance #}
+                <li class="dropdown {% ifequal main_menu "finance" %} active {% endifequal %}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Finance<span class="caret"></span></a>
+
+                    <ul class="dropdown-menu">
+                        <li><a href="/finance/requests">Funds Requests</a></li>
+                        <li><a href="/finance/receivables">Receivables</a></li>
+                        <li><a href="/finance/forecast">Forecast</a></li>
+
+                        <li><a href="/finance/payments/manage/">Manage Payments</a></li>
+                    </ul>
+                </li>
+
+
+                {# RND #}
+                <li class="dropdown {% ifequal main_menu "rnd" %} active {% endifequal %}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">RnD<span class="caret"></span></a>
+
+                    <ul class="dropdown-menu">
+                        <li><a href="/rnd/requests">Model Requests</a></li>
+                        <li><a href="/rnd/projects">RnD Projects</a></li>
+                        <li><a href="/rnd/models">Models List</a></li>
+
+                    </ul>
+                </li>
+                {#% endif %#}
+
+
+                {% comment %}
+                {# CRM #}
+                <li class="dropdown {% ifequal main_menu "crm" %} active {% endifequal %}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">CRM<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/crm/customers">Customers</a></li>
+
+                        {% if user.is_superuser or u_access.2200 %}
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/crm/contracts">Contracts</a></li>
+                            <li><a href="/crm/customer/add">Add Customer</a></li>
+                            <li><a href="/crm/contract/add">Add Contract</a></li>
+
+                            <li role="separator" class="divider"></li>
+                            <li class="dropdown-header">Unit operations</li>
+
+                            <li><a href="/sales/advsearch">Advanced search</a></li>
+                            <li><a href="/sales/bundle">Reserve/Sale Units</a></li>
+                             <li><a href="/sales/soldunits">Cancel Sale</a></li>
+                        {% endif %}
+
+                    </ul>
+                </li>
+{% endcomment %}
+
+                {# REPORTS #}
+                {% comment %}
+                <li class="dropdown {% ifequal main_menu "reports" %} active {% endifequal %}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Reports<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/reports/locstatus">Units by locations/status</a></li>
+                        <li><a href="/reports/inventory">Inventory report</a></li>
+                        <li><a href="/reports/shipping">Shipping report</a></li>
+                        <li><a href="/reports/ceo">CEO report</a></li>
+                        <li><a href="/reports/qccheck">QC check report</a></li>
+                        <li><a href="/reports/photos">Unit Photos</a></li>
+                    </ul>
+                </li>
+                {# <li><a href="#about">About</a></li> #}
+                {# <li><a href="#contact">Contact</a></li> #}
+
+            {% endcomment %}
+            </ul>
+
+
+            <ul class="nav navbar-nav navbar-right">
+                {# SEARCH FORM #}
+                <form class="navbar-form navbar-left" role="search" method="post" action="/sys/search">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        <input type="text" class="form-control" placeholder="Quick search" name="search_str">
+                    </div>
+                    {# <button type="submit" class="btn btn-default">Submit</button> #}
+                </form>
+                {# <li><a href="/vms/support">Support</a></li> #}
+
+                {# SUPPORT #}
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Support<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/support">Contact Support</a></li>
+                        {#  <li><a href="http://vms.streit-zeus.com/static/manual/manual.htm" target="_blank">User Manual</a></li> #}
+
+
+                    </ul>
+                </li>
+
+
+
+
+                {% if user.is_authenticated %}
+
+                    <li class="dropdown {% ifequal main_menu "user" %} active {% endifequal %}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">
+                            {{ user.first_name }} {{ user.last_name }}<span class="caret"></span></a>
+
+                        <ul class="dropdown-menu">
+
+                            <li><a href="/user/settings">Settings</a></li>
+
+                            {% if user.is_superuser %}
+                                <li><a href="/admin">Admin</a></li>
+                                <li><a href="/sys/adduser">Add User</a></li>
+                            {% endif %}
+
+                            <li role="separator" class="divider"></li>
+
+                            <li><a href="/user/logout?next=/">Logout</a></li>
+
+                        </ul>
+                    </li>
+                {% else %}
+
+
+
+                    <li><a href="user/login">Login</a></li>
+
+
+                {% endif %}
+
+            </ul>
+
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>

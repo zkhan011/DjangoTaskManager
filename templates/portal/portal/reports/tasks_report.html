@@ -1,0 +1,218 @@
+{% extends "portal/base.html" %}
+{# Tasks report #}
+
+{% load staticfiles %}
+
+{% block additional_head_links %}
+    <link rel="stylesheet" type="text/css" href="{% static "datatables/datatables.min.css" %}"/>
+    <script type="text/javascript" src="{% static "datatables/datatables.min.js" %}"></script>
+
+    {# FixedHeader #}
+    <script type="text/javascript"
+            src="{% static "datatables/FixedHeader-3.1.3/js/dataTables.fixedHeader.js" %}"></script>
+    <link rel="stylesheet" type="text/css"
+          href="{% static "datatables/FixedHeader-3.1.3/css/fixedHeader.bootstrap.css" %}"/>
+
+{% endblock %}
+
+{% block title %} Tasks Report {% endblock %}
+
+{% block container %}
+
+    <h3>Tasks Report</h3>
+
+
+    <div class="well well-sm ">
+
+        <form class="form-horizontal" role="form">
+         {# <input type="hidden" name="r" value="1"> #}
+
+            <div class="form-group ">
+                <label class="control-label col-sm-1" for="id_start_date">Deadline:</label>
+                <div class="col-sm-2 ">
+                    {{ form.period }}
+                     {{ form.period.errors }}
+                </div>
+
+
+            </div>
+
+
+
+            <div class="form-group">
+                <div class="col-sm-offset-1 col-sm-4">
+                    <button type="submit" class="btn btn-default">Generate</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+
+    {% if data %}
+
+        <div class="well">
+    <h4>Tasks report:</h4>
+
+
+    <table class="table table-hover  table-striped display ">
+        <thead>
+        <tr>
+            <th>Assignee</th>
+            <th class="text-center"><span class="label label-info">Total:</span></th>
+            <th class="text-center"><span class="label label-success">Completed*:</span></th>
+            <th class="text-center"><span class="label label-danger">Failed:</span></th>
+            <th class="text-center"><span class="label label-primary">Progress:</span></th>
+
+            <th class="text-center"><span class="label label-warning">On hold:</span></th>
+            <th class="text-center"><span class="label label-danger">Not started:</span></th>
+            <th class="text-center"><span class="label label-default">Canceled:</span></th>
+             <th class="text-center">Performance</th>
+			 <th class="text-center">Overall Performance</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for r in data %}
+            <tr>
+                <td>{# <a href="/tasks/list?assignee={{ r.user.id }}" >{{ r.user.first_name }} {{ r.user.last_name }}</a> #}
+                    {{ r.user.first_name }} {{ r.user.last_name }}
+                </td>
+                <td class="text-center">{{ r.total }}</td>
+                <td class="text-center">{{ r.completed }}</td>
+                <td class="text-center">{{ r.failed }}</td>
+                <td class="text-center">{{ r.progress }}</td>
+                <td class="text-center">{{ r.blocked }}</td>
+                <td class="text-center">{{ r.not_started }}</td>
+                <td class="text-center">{{ r.canceled }}</td>
+                <td class="text-center">{{ r.performance|floatformat:1  }}%</td>
+				<td class="text-center">{{ r.performance|floatformat:1  }}%</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+</div>
+
+    {% endif %}
+
+    {% if total_tasks %}
+
+         <div class="">
+        <table id="tasks-table" class="table table-condensed table-hover table-bordered1 table-striped display compact">
+            <thead>
+            <tr class="result-header small">
+                <th>Ref.</th>
+                <th>Start Date</th>
+                <th>Owner</th>
+                <th>Description</th>
+                <th>Project</th>
+                <th>Status</th>
+                <th>Assignee</th>
+                <th>Comments</th>
+                <th>Priority</th>
+                <th>Deadline</th>
+                <th>Completed*</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for t in total_tasks %}
+                <tr class="small" id="rec_{{ t.id }}">
+                    <td>
+                      {# <a href="/tasks/{{ t.id }}/details"> {{ t.number }}</a> #}
+                        {{ t.number }}
+                    </td>
+                    <td>
+                        {{ t.start_date|date:'Y-m-d' }}
+                    </td>
+                    <td>
+                       {# <a href="/tasks/list?owner={{ t.owner.id }}">  {{ t.owner.first_name }} {{ t.owner.last_name }}</a> #}
+                        {{ t.owner.first_name }} {{ t.owner.last_name }}
+                    </td>
+                    <td>
+                         {{ t.details|truncatewords:16 }}
+                    </td>
+                    <td>
+                        {{ t.project | default_if_none:'' }}
+                    </td>
+                    <td>
+                        {% if t.status == 'PR' %}
+                            <span class="label label-primary">
+                        {% elif t.status == 'BL' %}
+                            <span class="label label-warning">
+                        {% elif t.status == 'CM' %}
+                            <span class="label label-success">
+                        {% elif t.status == 'CC' %}
+                            <span class="label label-default">
+                        {% else %}
+                            <span class="label label-danger"> {# Not Started / Default #}
+                        {% endif %}
+                        {{ t.get_status_display }}</span>
+                    </td>
+                    <td>
+                       {#   <a href="/tasks/list?assignee={{ t.assignee.id }}">{{ t.assignee.first_name }} {{ t.assignee.last_name }}</a>#}
+                    {{ t.assignee.first_name }} {{ t.assignee.last_name }}
+                    </td>
+                    <td>
+                        {{ t.comments|default_if_none:''|truncatewords:12 }}
+                    </td>
+                    <td>
+                        <span
+                                {% if t.priority == 30 %} class="label label-danger" {% endif %}
+                                {% if t.priority == 40 %} class="label label-danger" {% endif %}
+                        >{{ t.get_priority_display }}</span>
+                    </td>
+                    <td>
+                        {% if t.target_completion_date < today.date %}
+                           {# Delay! #}
+                          <span  class="label label-danger"> {{ t.target_completion_date|date:'Y-m-d' }}</span>
+                        {% else %}
+                            {{ t.target_completion_date|date:'Y-m-d' }}
+                        {%  endif %}
+                    </td>
+                    <td>
+                        {% if t.completed %} <span class="label label-success">YES</span>{% endif %}
+                    </td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+        <script>
+
+         $(document).ready(function () {
+
+            $("#tasks-table").DataTable({
+                // paging: false
+                fixedHeader: true,
+                paging: false,
+
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy',
+                    // 'csv',
+                    //'excel',
+                    //'pdf',
+                    'print'
+                ]
+                // "pagingType": "full_numbers"
+            });
+
+
+        });
+
+
+        </script>
+
+
+
+
+    {% endif %}
+
+
+
+{% endblock %}

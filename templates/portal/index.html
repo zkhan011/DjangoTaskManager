@@ -1,0 +1,13 @@
+{% extends "portal/base.html" %}
+
+{% load staticfiles %}
+
+
+{% block container %}
+    <div class="jumbotron">
+        <img src={% static "img/logo_250.png" %}>
+    </div>
+
+    {{ dashboard_tasks }}
+    {# {{ total_tasks }} #}
+{% endblock %}

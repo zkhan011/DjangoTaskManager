@@ -1,0 +1,236 @@
+{% extends "portal/base.html" %}
+{# create new Task #}
+
+{% block title %} Task {{ task.number }} - Streit Portal{% endblock %}
+
+
+{% block container %}
+
+     <a href="/projects/list" class="btn btn-primary">Back to Projects list</a>
+
+    <h3>Project {{ project.code }} Details </h3>
+
+    {% if can_manage %}
+        {# Owner!!!  #}
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+
+                <form class="form-horizontal" role="form" action="" method="post">
+                    {% csrf_token %}
+
+
+                    {# Name #}
+                    <div class="form-group   {% if form.name.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="id_nane">Project*:</label>
+
+                        <div class="col-sm-4">
+                            {{ form.name }}
+                            {{ form.name.errors }}
+                        </div>
+                    </div>
+
+
+                    {# Start Date: #}
+                    <div class="form-group  {% if form.start_date.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2" for="id_start_date">Start Date*:</label>
+
+                        <div class="col-sm-3">
+                            {{ form.start_date }}
+                            {{ form.start_date.errors }}
+                        </div>
+                    </div>
+
+
+                    {# Required Date: #}
+                    <div class="form-group  {% if form.due_date.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2" for="id_due_date">Required Date*:</label>
+
+                        <div class="col-sm-3">
+                            {{ form.due_date }}
+                            {{ form.due_date.errors }}
+                        </div>
+                    </div>
+
+                    {# PWO : #}
+                    <div class="form-group   {% if form.pwo.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="id_pwo">PWO:</label>
+
+                        <div class="col-sm-4">
+                            {{ form.pwo }}
+                            {{ form.pwo.errors }}
+                        </div>
+                    </div>
+
+                    {# Assignee #}
+                    <div class="form-group   {% if form.assignee.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="id_assignee">Assignee*:</label>
+
+                        <div class="col-sm-3">
+                            {{ form.assignee }}
+                            {{ form.assignee.errors }}
+                        </div>
+                    </div>
+
+                    {# Department #}
+                    <div class="form-group   {% if form.department.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="id_department">Department:</label>
+
+                        <div class="col-sm-3">
+                            {{ form.department }}
+                            {{ form.department.errors }}
+                        </div>
+                    </div>
+
+                    {# Owner #}
+                    <div class="form-group   {% if form.owner.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="id_owner">Owner*:</label>
+
+                        <div class="col-sm-3">
+                            {{ form.owner }}
+                            {{ form.owner.errors }}
+                        </div>
+                    </div>
+
+                {# Comments : #}
+                    <div class="form-group   {% if form.comments.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="status">Comments:</label>
+
+                        <div class="col-sm-4">
+                            {{ form.comments }}
+                            {{ form.comments.errors }}
+                        </div>
+                    </div>
+
+
+                    {# Completed : #}
+                    <div class="form-group   {% if form.completed.errors %}  has-error {% endif %}">
+                        <label class="control-label col-sm-2 {# input-sm #}" for="id_completed">Completed:</label>
+
+                        <div class="col-sm-4">
+                            {{ form.completed }}
+                            {{ form.completed.errors }}
+                        </div>
+                    </div>
+
+
+                    {# Submit #}
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-4">
+                            <button type="submit" class="btn btn-primary">Update project</button>
+                            <a href="/tasks/list" class="btn btn-default" role="button">Cancel</a>
+
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    {% else %}
+        {# all others #}
+        {{ project.name }} <br>
+        {{ project.start_date }}
+    {% endif %}
+
+    <div>&nbsp;</div>
+
+    <h4> Linked Tasks </h4>
+
+    <a href="/tasks/create?project={{ project.id }}" class="btn btn-primary" >Create a task</a>
+     <div>&nbsp;</div>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+
+
+            <table id="tasks-table"
+                   class="table table-condensed table-hover table-bordered1 table-striped display compact">
+                <thead>
+                <tr class="result-header small">
+                    <th>Ref.</th>
+                    <th>Start Date</th>
+                    <th>Owner</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Assignee</th>
+                    <th>Comments</th>
+                    <th>Deadline</th>
+                    <th>Duration (days)</th>
+                    <th>Completed</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for t in tasks %}
+                    <tr class="small">
+                        <td>
+                            <a href="/tasks/{{ t.id }}/details"> {{ t.number }}</a>
+                        </td>
+                        <td>
+                            {{ t.start_date }}
+                        </td>
+
+                        <td>
+                            {{ t.owner.first_name }} {{ t.owner.last_name }}
+                        </td>
+                        <td>
+                            {{ t.details|truncatewords:12 }}
+                        </td>
+
+                        <td>
+                            {% if t.status == 'PR' %}
+                                <span class="label label-warning">
+                            {% elif t.status == 'BL' %}
+                                <span class="label label-primary">
+                            {% elif t.status == 'CM' %}
+                                <span class="label label-success">
+                            {% else %}
+                                <span class="label label-danger"> {# Not Started / Default #}
+                            {% endif %}
+
+                            {{ t.get_status_display }}</span>
+                        </td>
+
+                        <td> {{ t.assignee.first_name }} {{ t.assignee.last_name }}  </td>
+                        <td> {{ t.comments|default_if_none:''|truncatewords:12 }}  </td>
+                        <td>
+                            {{ t.target_completion_date }}
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                            {% if t.completed %}
+                                <span class="label label-success">Completed</span>
+
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+
+
+
+
+    <script>
+        $(function () {
+            $("#id_start_date").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            $("#id_due_date").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+        });
+
+    </script>
+
+
+{% endblock %}

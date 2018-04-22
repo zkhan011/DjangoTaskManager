@@ -1,0 +1,386 @@
+{# finance requests list #}
+{% extends "portal/base.html" %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block title %}
+   4 Weeks Forecast
+{% endblock %}
+
+{% block additional_head_links %}
+    <link rel="stylesheet" type="text/css" href="{% static "datatables/datatables.min.css" %}"/>
+    <script type="text/javascript" src="{% static "datatables/datatables.min.js" %}"></script>
+
+    <script src="{% static "chartjs/Chart.bundle.js" %}"></script>
+    <script src="{% static "chartjs/utils.js" %}"></script>
+
+    <style>
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
+
+{% endblock %}
+
+
+{% block container %}
+    <!-- Main component for a primary marketing message or call to action -->
+
+    <h3>
+        4 Weeks Forecast
+    </h3>
+
+    {% comment %}
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+
+        </div>
+
+        <div class="panel-body">
+
+            {{ date_from }} <br>
+            {{ date_to }}
+
+
+            <div style="width: 100%">
+                <canvas id="forecast_chart"></canvas>
+            </div>
+
+
+        </div>
+    </div>
+{% endcomment %}
+
+
+
+    <table class=" table table-condensed table-hover display compact table-striped" id="resulttbl">
+        <thead>
+        <tr class="result-header small">
+            <th>Request</th>
+            <th>Payment<br>Priority</th>
+            <th></th>
+            <th>PO<br>&nbsp;</th>
+            <th>Vendor</th>
+            <th>Priority</th>
+            <th>Required Date</th>
+            <th>Overdue</th>
+            <th align="right">Current week <br> {{ week1 }}</th>
+            <th align="right">Week 2 <br> {{ week2 }}</th>
+            <th>Week 3 <br> {{ week3 }}</th>
+            <th>Week 4 <br> {{ week4 }}</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {# First - overdue records #}
+        {% for r in overdue_requests %}
+            <tr class="small" id="request_{{ r.id }}">
+                <td>
+                    <a href="/finance/request/{{ r.id }}/details">{{ r.number }}</a>
+                </td>
+                <td>
+                    <span id="pay_priority_{{ r.id }}">{{ r.payment_priority }}</span>
+                 </td>
+                <td>
+                    <select onchange="changePriority(this)" id="change_priority_{{ r.id }}">
+                        <option {% if r.payment_priority == 1 %}selected{% endif %}>1</option>
+                        <option {% if r.payment_priority == 2 %}selected{% endif %}>2</option>
+                        <option {% if r.payment_priority == 3 %}selected{% endif %}>3</option>
+                    </select>
+                </td>
+
+                <td>
+                    {{ r.po|default_if_none:"" }}
+                </td>
+                <td>
+                    {{ r.vendor|default_if_none:"" }}
+                </td>
+                <td>
+                    {{ r.get_priority_display }}
+                </td>
+                <td>
+                    {{ r.required_date }}
+                </td>
+                <td align="right" class="amount" >
+                    <a href="/finance/request/{{ r.id }}/details"><span id="amount_{{ r.id }}">{{ r.amount|floatformat:2|intcomma }}</span></a>
+                </td>
+                <td>
+                </td>
+                <td>
+                </td>
+                <td>
+                </td>
+                <td>
+                </td>
+            </tr>
+        {% endfor %}
+
+        {% for i in data %}
+            <tr class="small" id="request_{{ i.request.id }}">
+                <td>
+                    <a href="/finance/request/{{ i.request.id }}/details">{{ i.request.number }}</a>
+                </td>
+                <td>
+                    <span id="pay_priority_{{ i.request.id }}">{{ i.request.payment_priority }}</span>
+                 </td>
+                <td>
+
+                    <select onchange="changePriority(this)" id="change_priority_{{ i.request.id }}">
+                        <option {% if i.request.payment_priority == 1 %}selected{% endif %}>1</option>
+                        <option {% if i.request.payment_priority == 2 %}selected{% endif %}>2</option>
+                        <option {% if i.request.payment_priority == 3 %}selected{% endif %}>3</option>
+                    </select>
+                </td>
+
+                <td>
+                    {{ i.request.po|default_if_none:"" }}
+                </td>
+                <td>
+                    {{ i.request.vendor|default_if_none:"" }}
+                </td>
+                <td>
+                    {{ i.request.get_priority_display }}
+                </td>
+                <td>
+                    {{ i.request.required_date }}
+                </td>
+                <td>
+                </td>
+
+                {% if i.week == 1 %}
+                    <td align="right" class="amount">
+                        <a href="/finance/request/{{ i.request.id }}/details"> <span id="amount_{{ i.request.id }}"> {{ i.request.amount|floatformat:2|intcomma }} </span> </a>
+                    </td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+
+                {% if i.week == 2 %}
+                    <td align="right" class="amount">
+                        <a href="/finance/request/{{ i.request.id }}/details"> <span id="amount_{{ i.request.id }}"> {{ i.request.amount|floatformat:2|intcomma }}</span>  </a>
+                    </td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+
+                {% if i.week == 3 %}
+                    <td align="right" class="amount">
+                        <a href="/finance/request/{{ i.request.id }}/details"> <span id="amount_{{ i.request.id }}"> {{ i.request.amount|floatformat:2|intcomma }} </span></a>
+                    </td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+
+                {% if i.week == 4 %}
+                    <td align="right" class="amount">
+                        <a href="/finance/request/{{ i.request.id }}/details"> <span id="amount_{{ i.request.id }}">{{ i.request.amount|floatformat:2|intcomma }} </span></a>
+                    </td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+
+     {#  result summ table #}
+    {% comment %}
+    <table class=" table table-condensed ">
+        <tr class="small">
+             <td></td>
+            <td>
+                Total by week
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td align="right">
+                {{ week_sums.overdue|floatformat:2|intcomma }}
+            </td>
+            <td align="right">
+                {{ week_sums.week1|floatformat:2|intcomma }}
+            </td>
+            <td align="right">
+                {{ week_sums.week2|floatformat:2|intcomma }}
+            </td>
+            <td align="right">
+                {{ week_sums.week3|floatformat:2|intcomma }}
+            </td>
+            <td align="right">
+                {{ week_sums.week4|floatformat:2|intcomma }}
+            </td>
+        </tr>
+</table>
+{% endcomment %}
+<br><br>
+    <div class="well well-sm1">
+        <div class="row">
+            <div class="col-sm-1">Priority 1:</div>
+            <div class="col-sm-2" align="right"><span id="priority_1_sum">0.00</span></div>
+            <div class="col-sm-6">
+               {#  <button type="button" class="btn btn-success btn-xs">Proceed with payment</button> #}
+                <a class="btn btn-success btn-xs" href="/finance/proceed/priority/1" >Proceed with payment</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-1">Priority 2:</div>
+            <div class="col-sm-2" align="right"><span id="priority_2_sum">0.00</span></div>
+            <div class="col-sm-6"><button type="button" class="btn btn-warning btn-xs">Proceed with payment</button></div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-1">Priority 3:</div>
+            <div class="col-sm-2" align="right"><span id="priority_3_sum">0.00</span></div>
+            <div class="col-sm-6"><button type="button" class="btn btn-danger btn-xs">Proceed with payment</button></div>
+        </div>
+
+
+    </div>
+
+  {#   <button onclick="buttonClick()"> Calculate </button> #}
+
+
+<script>
+
+ //table.column( 7 ).data().sum();
+
+ $(document).ready(function () {
+     var table = $("#resulttbl").DataTable({
+         paging: false,
+
+         dom: 'Bfrtip',
+         buttons: [
+             'copy',
+             // 'csv',
+           //  'excel',
+           //  'pdf',
+             'print'],
+
+         "order": [[1, "asc"], [5, "desc"]],
+
+         //paging: true
+         // "pagingType": "full_numbers"
+     });
+
+     $("#priority_1_sum").html(calculateSumByPriority(1).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+     $("#priority_2_sum").html(calculateSumByPriority(2).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+     $("#priority_3_sum").html(calculateSumByPriority(3).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+
+ });
+
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+function changePriority(obj){
+
+    var val = obj.value;
+    var record_id = obj.id.replace("change_priority_", "");
+    var element = "#pay_priority_" + record_id;
+    var csrftoken = getCookie('csrftoken');
+
+    $.ajax({
+        url: "ajax/updaterequest/",
+        type: "POST",
+        data: {
+            id: record_id,
+            priority: val,
+            csrfmiddlewaretoken: csrftoken
+        },
+        success: function (result) {
+            $(element).html(result);
+            $("#priority_1_sum").html(calculateSumByPriority(1).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+            $("#priority_2_sum").html(calculateSumByPriority(2).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+            $("#priority_3_sum").html(calculateSumByPriority(3).toFixed(3).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+        }
+    });
+
+
+}
+
+function changeLocation(){
+    $("#unit_location").load("/ajax/change_location?uid="+$("#unit_id").val());
+}
+
+ function calculateSumByPriority(priority) {
+
+    // var table = $("#resulttbl");
+     var table = document.getElementById("resulttbl");
+     var total_rows = 0;
+     var sum = 0.0;
+
+    //  <tr class="small" id="request_
+     var names = "";
+
+     $('#resulttbl > tbody  > tr').each(function() {
+
+         var record_id = this.id.replace("request_", "");
+
+         var record_priority = $("#pay_priority_"+record_id).html();
+
+         if (record_priority == priority){
+             var amount = parseFloat( $("#amount_"+record_id).html().replace(/,/g, '') );
+             names += this.id;
+             sum += amount;
+             console.log (amount);
+         }
+
+        // console.log(this.id);
+        // console.log(priority);
+        // var amount = parseFloat( $("#amount_"+record_id).html().replace(",", "") );
+        // var amount = parseFloat( $("#amount_"+record_id).html().replace(/,/g, '') ); // removing all comas if any
+
+
+     });
+
+     {% comment %}
+     for (var i = 0, row; row = table.rows[i]; i++) {
+         //iterate through rows
+         //rows would be accessed using the "row" variable assigned in the for loop
+         for (var j = 0, col; col = row.cells[j]; j++) {
+             //iterate through columns
+             //columns would be accessed using the "col" variable assigned in the for loop
+         }
+         total_rows++;
+     }
+     {% endcomment %}
+
+     return  sum;
+ }
+
+function buttonClick(){
+
+    $("#priority_1_sum").html(calculateSumByPriority(1));
+}
+
+
+</script>
+
+
+
+{% endblock %}

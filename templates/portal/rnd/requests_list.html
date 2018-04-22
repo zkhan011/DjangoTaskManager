@@ -1,0 +1,187 @@
+{% extends "portal/base.html" %}
+
+
+
+{% block container %}
+    <!-- Main component for a primary marketing message or call to action -->
+
+    <h3>
+        {% if manager or chairman %}
+            Requests for approval
+         {% else %}
+        My Requests
+        {% endif %}
+        </h3>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            {% if not chairman %}
+            <a href="/rnd/request/create" class="btn btn-primary" role="button">Create model request</a>
+           {% endif %}
+            <a href="/rnd/requests" class="btn btn-primary">Refresh</a>
+        </div>
+
+        <div class="panel-body">
+
+            <table class=" table table-condensed table-hover table-bordered1 table-striped">
+                <thead>
+                <tr class="result-header">
+                    <th>Request</th>
+                    <th>Model</th>
+                    <th>Author</th>
+                    <th>Created</th>
+                    <th>Required date</th>
+                    <th>Comments</th>
+                    <th>Manager approved</th>
+                    <th>Chairman approved</th>
+                    {% if  manager or  chairman %}
+                    {% else %}
+                        <th>&nbsp;</th>
+                    {% endif %}
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for r in requests %}
+                    <tr class="">
+                        <td>
+                            <a href="/rnd/request/{{ r.id }}/details">{{ r.number }}</a>
+                        </td>
+                        <td>
+                            {{ r.model }}
+                        </td>
+                        <td>
+                            {{ r.author }}
+                        </td>
+                        <td>
+                            {{ r.created }}
+                        </td>
+                        <td>
+                            {{ r.required_date }}
+                        </td>
+                        <td>
+                            {{ r.text|truncatewords:5 }}
+                        </td>
+                        <td>
+                            {% if r.manager_approved == 0 %}
+                                <span class="label label-warning">Pending</span>
+                            {% elif r.manager_approved == 1 %}
+                                <span class="label label-danger">Declined</span>
+                            {% elif r.manager_approved == 2 %}
+                                <span class="label label-success">Approved</span>
+                            {% endif %}
+                            {% comment %}
+                            {% ifequal r.manager_approved  0 %}
+                                <span class="label label-warning">Pending</span>
+                            {% endifequal %}
+                            {% ifequal r.manager_approved  1 %}
+                                <span class="label label-danger">Declined</span>
+                            {% endifequal %}
+                            {% ifequal r.manager_approved 2 %}
+                                <span class="label label-success">Approved</span>
+                            {% endifequal %}
+                            {{ r.manager_approved }}
+                            {% endcomment %}
+                        </td>
+                        <td>
+                            {% if r.owner_approved == 0 %}
+                                <span class="label label-warning">Pending</span>
+                            {% elif r.owner_approved == 1 %}
+                                <span class="label label-danger">Declined</span>
+                            {% elif r.owner_approved == 2 %}
+                                <span class="label label-success">Approved</span>
+                            {% endif %}
+                        </td>
+                        {% if  manager or  chairman %}
+                        {% else %}
+                            <td>
+                                <a href="/rnd/request/{{ r.id }}/delete/" class="btn btn-danger btn-xs" role="button"
+                                   onclick="return confirm('Are you sure to remove Request {{ r.number }}?')">delete</a>
+                            </td>
+                        {% endif %}
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    {% if completed_requests %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <strong>Completed requests</strong>
+        </div>
+
+        <div class="panel-body">
+
+             <table class=" table table-condensed table-hover table-bordered1 table-striped">
+                <thead>
+                <tr class="result-header">
+                    <th>Request</th>
+                    <th>Model</th>
+                    <th>Author</th>
+                    <th>Created</th>
+                    <th>Required date</th>
+                    <th>Comments</th>
+                    <th>Manager approved</th>
+                    <th>Chairman approved</th>
+
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for r in completed_requests %}
+                    <tr class="">
+                        <td>
+                            <a href="/rnd/request/{{ r.id }}/details">{{ r.number }}</a>
+                        </td>
+                        <td>
+                            {{ r.model }}
+                        </td>
+                        <td>
+                            {{ r.author }}
+                        </td>
+                        <td>
+                            {{ r.created }}
+                        </td>
+                        <td>
+                            {{ r.required_date }}
+                        </td>
+                        <td>
+                            {{ r.text|truncatewords:5 }}
+                        </td>
+                        <td>
+                            {% if r.manager_approved == 0 %}
+                                <span class="label label-warning">Pending</span>
+                            {% elif r.manager_approved == 1 %}
+                                <span class="label label-danger">Declined</span>
+                            {% elif r.manager_approved == 2 %}
+                                <span class="label label-success">Approved</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if r.owner_approved == 0 %}
+                                <span class="label label-warning">Pending</span>
+                            {% elif r.owner_approved == 1 %}
+                                <span class="label label-danger">Declined</span>
+                            {% elif r.owner_approved == 2 %}
+                                <span class="label label-success">Approved</span>
+                            {% endif %}
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+    {% endif %}
+
+
+
+
+
+{% endblock %}

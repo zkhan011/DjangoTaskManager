@@ -1,0 +1,81 @@
+{% extends "portal/base.html" %}
+
+
+
+{% block container %}
+    <!-- Main component for a primary marketing message or call to action -->
+
+ <h3>Create Model Request</h3>
+    <div class="panel panel-default">
+
+
+
+        <div class="panel-body">
+
+          <form class="form-horizontal" role="form" action="/rnd/request/create" method="post">
+            {% csrf_token %}
+
+            {# Model: #}
+            <div class="form-group  {% if form.model.errors %}  has-error {% endif %}">
+                <label class="control-label col-sm-2" for="id_model">Model:</label>
+
+                <div class="col-sm-3">
+                    {{ form.model }}
+                    {{ form.model.errors }}
+                  {# {{ form.uid.errors.as_text }} #}
+                </div>
+            </div>
+
+          {# Required Date: #}
+             <div class="form-group  {% if form.required_date.errors %}  has-error {% endif %}">
+                <label class="control-label col-sm-2" for="id_required_date">Required Date:</label>
+
+                <div class="col-sm-3">
+                    {{ form.required_date }}
+                    {{ form.required_date.errors }}
+                </div>
+            </div>
+
+            {# Comments: #}
+            <div class="form-group   {% if form.text.errors %}  has-error {% endif %}">
+                <label class="control-label col-sm-2 {# input-sm #}" for="status">Comments:</label>
+
+                <div class="col-sm-8">
+                    {{ form.text }}
+                    {{ form.text.errors }}
+                </div>
+            </div>
+
+           {# Submit #}
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-4">
+                    <button type="submit" class="btn btn-primary">Create request</button> <a href="/rnd/requests" class="btn btn-default" role="button">Cancel</a>
+
+                </div>
+            </div>
+
+
+          </form>
+
+
+
+        </div>
+    </div>
+
+
+<script>
+        $(function () {
+            $("#id_required_date").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            {#   //$("#id_end_date").datepicker('setDate', new Date()); #}
+            {#// if ($("#id_date").val() === ""){   #}
+            {#//     $("#id_date").datepicker('setDate', new Date()); #}
+            {#//}#}
+        });
+
+    </script>
+
+
+{% endblock %}

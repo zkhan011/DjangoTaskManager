@@ -1,0 +1,121 @@
+{% extends "portal/base.html" %}
+
+
+
+{% block container %}
+    <!-- Main component for a primary marketing message or call to action -->
+
+ <h3>New Receivables record</h3>
+    <div class="panel panel-default">
+
+
+
+        <div class="panel-body">
+
+          <form class="form-horizontal" role="form"  method="post">
+            {% csrf_token %}
+
+            {# Amount: #}
+            <div class="form-group  {% if form.amount.errors %}  has-error {% endif %}">
+                <label class="control-label col-sm-2" for="id_amount">Amount, AED*:</label>
+
+                <div class="col-sm-3">
+                    {{ form.amount }}
+                    {{ form.amount.errors }}
+                  {# {{ form.uid.errors.as_text }} #}
+                </div>
+            </div>
+
+
+
+          {# Estimated Date: #}
+             <div class="form-group  {% if form.date.errors %}  has-error {% endif %}">
+                <label class="control-label col-sm-2" for="id_date">Estimated Date*:</label>
+
+                <div class="col-sm-3">
+                    {{ form.date }}
+                    {{ form.date.errors }}
+                </div>
+            </div>
+
+          {# Partner : #}
+            <div class="form-group   {% if form.partner.errors %}  has-error {% endif %}">
+                <label class="control-label col-sm-2 {# input-sm #}" for="id_partner">Partner:</label>
+
+                <div class="col-sm-4">
+                    {{ form.partner }}
+                    {{ form.partner.errors }}
+                </div>
+            </div>
+
+{% comment %}
+           {# Project : #}
+            <div class="form-group   {% if form.project.errors %}  has-error {% endif %}">
+                <label class="control-label col-sm-2 {# input-sm #}" for="status">Project (if any):</label>
+
+                <div class="col-sm-4">
+                    {{ form.project }}
+                    {{ form.project.errors }}
+                </div>
+            </div>
+
+           {# PO : #}
+            <div class="form-group   {% if form.po.errors %}  has-error {% endif %}">
+                <label class="control-label col-sm-2 {# input-sm #}" for="id_po">PO (if any):</label>
+
+                <div class="col-sm-4">
+                    {{ form.po }}
+                    {{ form.po.errors }}
+                </div>
+            </div>
+
+{% endcomment %}
+
+            {# Comments: #}
+            <div class="form-group   {% if form.comments.errors %}  has-error {% endif %}">
+                <label class="control-label col-sm-2 {# input-sm #}" for="status">Comments*:</label>
+
+                <div class="col-sm-4">
+                    {{ form.comments }}
+                    {{ form.comments.errors }}
+                </div>
+            </div>
+
+
+
+
+
+           {# Submit #}
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-4">
+                    <button type="submit" class="btn btn-primary">Create record</button>
+                    <a href="/finance/receivables" class="btn btn-default" role="button">Cancel</a>
+
+                </div>
+            </div>
+
+
+          </form>
+
+
+
+        </div>
+    </div>
+
+
+ <script>
+        $(function () {
+            $("#id_date").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            {#   //$("#id_end_date").datepicker('setDate', new Date()); #}
+            {#// if ($("#id_date").val() === ""){   #}
+            {#//     $("#id_date").datepicker('setDate', new Date()); #}
+            {#//}#}
+        });
+
+    </script>
+
+
+{% endblock %}

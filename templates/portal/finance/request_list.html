@@ -1,0 +1,230 @@
+{# finance requests list #}
+{% extends "portal/base.html" %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block additional_head_links %}
+    <link rel="stylesheet" type="text/css" href="{% static "datatables/datatables.min.css" %}"/>
+    <script type="text/javascript" src="{% static "datatables/datatables.min.js" %}"></script>
+{% endblock %}
+
+
+{% block container %}
+    <!-- Main component for a primary marketing message or call to action -->
+
+    <h3>
+        {% if can_manage %}
+            Funds Requests for approval
+        {% else %}
+            My Funds Requests
+        {% endif %}
+    </h3>
+    {% comment %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            {# {% if not can_manage %} #}
+            <a href="/finance/request/create" class="btn btn-primary" role="button">Create request</a>
+            {# {% endif %} #}
+            <a href="/finance/requests" class="btn btn-success">Refresh</a>
+        </div>
+
+
+    </div>
+    {% endcomment %}
+
+    <a href="/finance/request/create" class="btn btn-primary" role="button">Create request</a>
+    <a href="/finance/requests" class="btn btn-success">Refresh</a>
+    <div>&nbsp</div><div>&nbsp</div>
+    <div>
+        <table class=" table table-condensed table-hover table-bordered1 table-striped display compact" id="resulttbl">
+            <thead>
+            <tr class="result-header small">
+                <th>Request</th>
+                <th>Amount, AED</th>
+                <th>Pay mode</th>
+                <th>Department</th>
+                <th>PO</th>
+                <th>Required date</th>
+                <th>Priority</th>
+                <th>Comments</th>
+                <th>Author</th>
+                <th>Created</th>
+                <th>Aproval status</th>
+                <th>&nbsp;</th>
+                {# {% if  can_manage %}{% else %}{% endif %} #}
+            </tr>
+            </thead>
+            <tbody>
+            {% for r in requests %}
+                <tr class="small">
+                    <td>
+                        <a href="/finance/request/{{ r.id }}/details">{{ r.number }}</a>
+                    </td>
+                    <td>
+                        {{ r.amount|floatformat:2|intcomma }}
+                    </td>
+                    <td>
+                        {{ r.payment_mode|default_if_none:'' }}
+                    </td>
+                    <td>
+                        {{ r.author.user_profile.department }}
+                    </td>
+                    <td>
+                        {{ r.po|default_if_none:'' }}
+                    </td>
+                    <td>
+                        {{ r.required_date|date:"Y-m-d" }}
+                    </td>
+                    <td>
+                        {{ r.get_priority_display }}
+                    </td>
+                    <td>
+                        {{ r.comments|truncatewords:5 }}
+                    </td>
+                    <td>
+                        {{ r.author.first_name }} {{ r.author.last_name }}
+                    </td>
+                    <td>
+                        {{ r.created }}
+                    </td>
+                    <td>
+                        {% if r.approved == 0 %}
+                            <span class="label label-warning">Pending</span>
+                        {% elif r.approved == 1 %}
+                            <span class="label label-danger">Declined</span>
+                        {% elif r.approved == 2 %}
+                            <span class="label label-success">Approved</span>
+                        {% endif %}
+                        {% comment %}
+                            {% ifequal r.manager_approved  0 %}
+                                <span class="label label-warning">Pending</span>
+                            {% endifequal %}
+                            {% ifequal r.manager_approved  1 %}
+                                <span class="label label-danger">Declined</span>
+                            {% endifequal %}
+                            {% ifequal r.manager_approved 2 %}
+                                <span class="label label-success">Approved</span>
+                            {% endifequal %}
+                            {{ r.manager_approved }}
+                            {% endcomment %}
+                    </td>
+                    {#     {% if  can_manage %}{% else %}{% endif %} #}
+                    <td>
+                        {% if user == r.author %}
+                            {#    <a href="/finance/request/{{ r.id }}/delete/" class="btn btn-danger btn-xs" role="button"#}
+                            {#    onclick="return confirm('Are you sure to remove Request {{ r.number }}?')">delete</a> #}
+
+                            <a href="/finance/request/{{ r.id }}/delete/"
+                               onclick="return confirm('Are you sure to remove Request {{ r.number }}?')"><span
+                                    class="glyphicon glyphicon-remove" style="color:red"> </span></a>
+
+                        {% endif %}
+                    </td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    {% if completed_requests %}
+        <div>&nbsp</div>
+        <div>&nbsp</div>
+        <div>&nbsp</div>
+        <div>&nbsp</div>
+        <h4>Completed requests</h4>
+        <div>
+            <table class=" table table-condensed table-hover table-bordered1 table-striped display compact"
+                   id="completed-requests-table">
+                <thead>
+                <tr class="result-header small">
+                    <th>Request</th>
+                    <th>Amount, AED</th>
+                    <th>Pay mode</th>
+                    <th>Department</th>
+                    <th>PO</th>
+                    <th>Required date</th>
+                    <th>Priority</th>
+                    <th>Comments</th>
+                    <th>Author</th>
+                    <th>Created</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for r in completed_requests %}
+                    <tr class="small">
+                        <td>
+                            <a href="/finance/request/{{ r.id }}/details">{{ r.number }}</a>
+                        </td>
+                        <td>
+                            {{ r.amount|floatformat:2|intcomma }}
+                        </td>
+                        <td>
+                            {{ r.payment_mode|default_if_none:'' }}
+                        </td>
+                        <td>
+                            {{ r.author.user_profile.department }}
+                        </td>
+                        <td>
+                            {{ r.po|default_if_none:'' }}
+                        </td>
+                        <td>
+                            {{ r.required_date|date:"Y-m-d" }}
+                        </td>
+                        <td>
+                            {{ r.get_priority_display }}
+                        </td>
+                        <td>
+                            {{ r.comments|truncatewords:5 }}
+                        </td>
+                        <td>
+                            {{ r.author.first_name }} {{ r.author.last_name }}
+                        </td>
+                        <td>
+                            {{ r.created }}
+                        </td>
+                        <td>
+                            <span class="label label-success">Completed</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+
+    {% endif %}
+
+
+    <script>
+
+        {#   $(document).ready(function () {  });#}
+
+        $("#resulttbl").DataTable({
+            // paging: false
+            paging: true,
+            dom: 'Bfrtip',
+            buttons: [
+                'copy',
+                // 'csv',
+                //'excel',
+                //'pdf',
+                'print'
+            ],
+            // "pagingType": "full_numbers"
+        });
+
+    $("#completed-requests-table").DataTable({
+            paging: true,
+            dom: 'Bfrtip',
+            buttons: [],
+        {#  buttons: [  'copy','print' /* 'csv', 'excel', 'pdf',*/  ],#}
+        });
+
+    </script>
+
+
+{% endblock %}

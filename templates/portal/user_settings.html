@@ -1,0 +1,65 @@
+{% extends "portal/base.html" %}
+
+{% load staticfiles %}
+
+
+
+{% block additional_head_links %}
+  {# <link href="{% static   "css/vms.css" %}" rel="stylesheet"> #}
+{% endblock %}
+
+{% block page_css %}
+
+
+
+{% endblock %}
+
+
+{% block container %}
+    <div class="alert alert-success">
+         User  <strong>{{ unit.uid }}</strong> details
+    </div>
+
+    {% comment %}
+    <div class="alert alert-success">
+         {{ u_access }} <br>
+               {{ u_access.2200  }}
+    </div>
+    {% endcomment %}
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <strong>User Permissions</strong>
+        </div>
+
+        <div class="panel-body">
+            <table class="table table-condensed table-hover">
+                <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Comments</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for p in permissions %}
+                    <tr>
+                        <td>{{ p.code }}</td>
+                        <td>{{ p.name }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+
+
+{% endblock %}
+
+
+
+
+
+

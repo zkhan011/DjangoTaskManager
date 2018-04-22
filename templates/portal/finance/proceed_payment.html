@@ -1,0 +1,174 @@
+{# finance requests list #}
+{% extends "portal/base.html" %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block additional_head_links %}
+    {# <!-- Include the plugin's CSS and JS: --> #}
+
+    <link rel="stylesheet" type="text/css" href="{% static "datatables/datatables.min.css" %}"/>
+    <script type="text/javascript" src="{% static "datatables/datatables.min.js" %}"></script>
+
+{% endblock %}
+
+
+{% block container %}
+    <!-- Main component for a primary marketing message or call to action -->
+
+    <h3>
+        Proceed payment requests
+    </h3>
+
+    <h4>Payment priority: week {{ pid }}</h4>
+
+    {% if message %}
+         <div class="alert alert-info alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            {{ message }}
+        </div>
+    {% endif %}
+
+    <div>&nbsp;</div>
+
+    <form method="post" action="" id="id-action-form">
+        <div>
+
+        {% csrf_token %}
+
+            <table class=" table table-condensed table-hover table-bordered1 table-striped display compact"
+                   id="resulttbl">
+                <thead>
+                <tr class="result-header small">
+                    <th><input type="checkbox" id="selectall"/></th>
+                    <th>Request</th>
+                    <th>Amount, AED</th>
+                    <th>Pay mode</th>
+                    <th>Department</th>
+                    <th>PO</th>
+                    <th>Required date</th>
+                    <th>Priority</th>
+                    <th>Comments</th>
+                    <th>Author</th>
+                    <th>Created</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for r in requests %}
+                    <tr class="small">
+                        <td>
+                            <input class="action-select" name="selected_id" type="checkbox" value="{{ r.id }}"/>
+                        </td>
+                        <td>
+                            <a href="/finance/request/{{ r.id }}/details">{{ r.number }}</a>
+                        </td>
+                        <td class="text-right">
+                            {{ r.amount|floatformat:2|intcomma }}
+                        </td>
+                        <td>
+                            {{ r.payment_mode|default_if_none:'' }}
+                        </td>
+                        <td>
+                            {{ r.author.user_profile.department }}
+                        </td>
+                        <td>
+                            {{ r.po|default_if_none:'' }}
+                        </td>
+                        <td>
+                            {{ r.required_date }}
+                        </td>
+                        <td>
+                            {{ r.get_priority_display }}
+                        </td>
+                        <td>
+                            {{ r.comments|truncatewords:5 }}
+                        </td>
+                        <td>
+                            {{ r.author.first_name }} {{ r.author.last_name }}
+                        </td>
+                        <td>
+                            {{ r.created }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+                <tfoot>
+                <tr class="small">
+                    <th>1</th>
+                    <th></th>
+                    <th class="text-right">&nbsp;</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </tfoot>
+            </table>
+
+        </div>
+
+        <div>&nbsp;</div>
+
+        <button type="submit" class="btn btn-primary">Complete requests</button>
+
+    </form>
+
+
+    <script>
+
+
+        $(document).ready(function () {
+
+            $("#selectall").change(function () {
+                $(".action-select").prop('checked', $(this).prop("checked"));
+            });
+
+        });
+
+
+        $("#resulttbl").DataTable({
+            // paging: false
+            paging: false,
+            sort: false,
+            dom: 'Bfrtip',
+            buttons: [
+                //  'excel',
+                // 'pdf',
+                'copy',
+                'print',
+            ],
+
+            "footerCallback": function (row, data, start, end, display) {
+                var api = this.api(), data;
+
+                // converting to number to find total
+                var numVal = function (i) {
+                    return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+                };
+
+                // computing column Total of the complete result
+                var amountTotal = api.column(2).data().reduce(
+                        function (a, b) {
+                            return numVal(a) + numVal(b);
+                        }, 0);
+
+                // Update footer by showing the total with the reference of the column index
+                $(api.column(0).footer()).html('Total');
+                $(api.column(2).footer()).html(amountTotal.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+            },
+
+            // "pagingType": "full_numbers"
+        });
+
+    </script>
+
+
+
+
+{% endblock %}
+
+
+rece

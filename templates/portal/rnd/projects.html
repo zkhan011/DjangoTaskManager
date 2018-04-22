@@ -1,0 +1,95 @@
+{% extends "portal/base.html" %}
+
+
+
+{% block container %}
+    <!-- Main component for a primary marketing message or call to action -->
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>Current Projects</strong></div>
+        <div class="panel-body">
+
+
+            <table class=" table table-condensed table-hover table-bordered1 table-striped">
+                <thead>
+                <tr class="result-header">
+                    <th>Name</th>
+                    <th>Lead Designer</th>
+                    <th>Due date</th>
+                    <th>Models</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for p in projects %}
+                    <tr class="">
+                        <td>
+                            <a href="/rnd/project/{{ p.id }}"> {{ p.name }}</a>
+                        </td>
+                        <td>
+                            {{ p.lead_designer }}
+                        </td>
+                        <td>
+                            {{ p.due_date }}
+                        </td>
+                        <td>
+                            {% for m in p.required_models.all %}
+                                {{ m.name }}<br>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Models in work</div>
+        <div class="panel-body">
+
+
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">All models</div>
+        <div class="panel-body">
+
+            <table class=" table table-condensed table-hover table-bordered1 table-striped">
+                <thead>
+                <tr class="result-header">
+                    <th>Name</th>
+                    <th>Index</th>
+                    <th>Author</th>
+                    <th>Created</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for m in allmodels %}
+                    <tr class="">
+                        <td>
+                            <a href="/rnd/model/{{ m.id }}"> {{ m.name }}</a>
+                        </td>
+                        <td>
+                            {{ m.index }}
+                        </td>
+                        <td>
+                            {{ m.author }}
+                        </td>
+                        <td>
+                            {{ m.created }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+{% endblock %}

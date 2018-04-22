@@ -1,0 +1,51 @@
+{% extends "portal/base.html" %}
+
+
+
+{% block container %}
+
+
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading">All models</div>
+        <div class="panel-body">
+
+            <table class=" table table-condensed table-hover table-bordered1 table-striped">
+                <thead>
+                <tr class="result-header">
+                    <th>Name</th>
+                    <th>Index</th>
+                    <th>Author</th>
+                    <th>Created</th>
+                    <th>Last updated by</th>
+                    <th>Last updated</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for m in allmodels %}
+                    <tr class="">
+                        <td>
+                            <a href="/rnd/model/{{ m.id }}"> {{ m.name }}</a>
+                        </td>
+                        <td>
+                            {{ m.index }}
+                        </td>
+                        <td>
+                            {{ m.author }}
+                        </td>
+                        <td>
+                            {{ m.created }}
+                        </td>
+                     <td> </td>
+                    <td> </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+{% endblock %}

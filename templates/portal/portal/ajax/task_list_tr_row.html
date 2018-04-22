@@ -1,0 +1,56 @@
+<td>
+    <a href="/tasks/{{ t.id }}/details"> {{ t.number }}</a>
+</td>
+<td>
+    {{ t.start_date|date:'Y-m-d' }}
+</td>
+<td>
+    <a href="/tasks/list?owner={{ t.owner.id }}">  {{ t.owner.first_name }} {{ t.owner.last_name }}</a>
+</td>
+<td>
+
+    {% if t.priority == 30 %}
+        <span class="label label-danger">{{ t.get_priority_display }} </span>
+    {% endif %}
+    {% if t.priority == 40 %}
+        <span class="label label-danger">{{ t.get_priority_display }} </span>
+    {% endif %}
+
+    <a href="/tasks/{{ t.id }}/details{% if  request.META.QUERY_STRING %}?_filter={{ request.META.QUERY_STRING|urlencode }}{% endif %} "
+       onclick="return editTask({{ t.id }});">  {{ t.details|truncatewords:12 }} </a>
+</td>
+<td>
+    {{ t.project | default_if_none:'' }}
+</td>
+<td>
+    {% if t.status == 'PR' %}
+        <span class="label label-primary">
+    {% elif t.status == 'BL' %}
+        <span class="label label-warning">
+    {% elif t.status == 'CM' %}
+        <span class="label label-success">
+    {% elif t.status == 'CC' %}
+        <span class="label label-default">
+    {% else %}
+        <span class="label label-danger"> {# Not Started / Default #}
+    {% endif %}
+    {{ t.get_status_display }}</span>
+</td>
+<td>
+    <a href="/tasks/list?assignee={{ t.assignee.id }}">{{ t.assignee.first_name }} {{ t.assignee.last_name }}</a>
+</td>
+<td>
+    {{ t.comments|default_if_none:''|truncatewords:12 }}
+</td>
+<td>
+    <span
+            {% if t.priority == 30 %} class="label label-danger" {% endif %}
+            {% if t.priority == 40 %} class="label label-danger" {% endif %}
+    >{{ t.get_priority_display }}</span>
+</td>
+<td>
+    {{ t.target_completion_date|date:'Y-m-d' }}
+</td>
+<td>
+    {{ t.start_date|timesince }}
+</td>

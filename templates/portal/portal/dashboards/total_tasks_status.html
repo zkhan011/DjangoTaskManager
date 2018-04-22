@@ -1,0 +1,40 @@
+<div class="well">
+    <h4>Tasks status update:</h4>
+
+
+    <table class="table table-hover  table-striped display ">
+        <thead>
+        <tr>
+            <th>Assignee</th>
+            <th class="text-center"><span class="label label-info">Total:</span></th>
+            <th class="text-center"><span class="label label-danger">Failed:</span></th>
+            <th class="text-center"><span class="label label-primary">Progress:</span></th>
+            <th class="text-center"><span class="label label-success">Completed:</span></th>
+            <th class="text-center"><span class="label label-warning">Blocked:</span></th>
+            <th class="text-center"><span class="label label-danger">Not started:</span></th>
+            <th class="text-center"><span class="label label-default">Canceled:</span></th>
+            <th class="text-center">Top Urgent - Performance</th>
+			<th class="text-center">Overall Performance</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for r in data %}
+            <tr>
+                <td  ><a href="/tasks/list?assignee={{ r.user.id }}" >{{ r.user.first_name }} {{ r.user.last_name }}</a></td>
+                <td class="text-center">{{ r.total }}</td>
+                <td class="text-center">{{ r.failed }}</td>
+                <td class="text-center">{{ r.progress }}</td>
+                <td class="text-center">{{ r.completed }}</td>
+                <td class="text-center">{{ r.blocked }}</td>
+                <td class="text-center">{{ r.not_started }}</td>
+                <td class="text-center">{{ r.canceled }}</td>
+                <td class="text-center">{{r.priorityperformance|floatformat:1}}%</td>
+				<td class="text-center">{{ r.performance|floatformat:1  }}%</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+</div>
